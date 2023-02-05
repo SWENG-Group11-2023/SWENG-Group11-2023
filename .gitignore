@@ -148,5 +148,6 @@ sketch
 
 #other stuff
 *.csv
+!observations*.csv
 *.db
 *.db-journal
