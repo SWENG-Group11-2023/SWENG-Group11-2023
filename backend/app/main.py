@@ -1,4 +1,3 @@
-from typing import Union
 from fastapi import FastAPI
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
@@ -21,5 +20,5 @@ async def root():
     return {"message": "Hello World"}
 
 @app.get("/items/{item_id}")
-async def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+async def read_item(item_id: int):
+    return {"item_id": item_id, "description": f"{item_id} is an item"}
