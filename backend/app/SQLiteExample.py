@@ -1,6 +1,5 @@
 import csv
 import sqlite3
-import time
 
 def CreateDatabase():
     try:
