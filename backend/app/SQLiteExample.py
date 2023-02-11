@@ -45,13 +45,15 @@ def ExecuteQuery(query:str):
     connection.close()
     return result
 
-
-if __name__ == "__main__":
+def main():
     # comment out next line after running file once. 
     # CreateDatabase()
 
-    # once you have created the database comment out line 43 and uncomment line 59.
+    # once you have created the database comment out line 50 and uncomment line 56.
    
     # sample SQL query to select the rows where the patient "10339b10-3cd1-4ac3-ac13-ec26728cb592" is in. Currently limited to 1
     # you can change this query to test different ones.
     print(ExecuteQuery('select * from test where PATIENT="10339b10-3cd1-4ac3-ac13-ec26728cb592" limit 1'))
+
+if __name__ == "__main__":
+    main()
