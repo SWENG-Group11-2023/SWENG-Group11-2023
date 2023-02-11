@@ -1,11 +1,11 @@
 import csv
 import sqlite3
+import time
 
 def CreateDatabase():
     try:
-
         # importing csv and extracting the data
-        with open('./observations_clean.csv','r') as file:
+        with open('./data/observations_clean.csv','r') as file:
             reader = csv.DictReader(file)
             observations = [(i['DATE'],i['PATIENT'],i['ENCOUNTER'],i['CODE'],i['DESCRIPTION'],
                 i['VALUE'],i['UNITS'],i['TYPE']) for i in reader]
@@ -29,6 +29,8 @@ def CreateDatabase():
         )
         """)
         cursor.executemany('INSERT INTO test (DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS,TYPE) VALUES (?,?,?,?,?,?,?,?)',observations)
+        cursor.close()
+        connection.close()
     except sqlite3.Error as error:
         print("error occurred on import")
 
@@ -38,15 +40,18 @@ def ExecuteQuery(query:str):
     # creates a cursor that allows interaction with the database
     cursor = connection.cursor()
 
-    print(cursor.execute(query).fetchall())
+    result = cursor.execute(query).fetchall()
+    cursor.close()
+    connection.close()
+    return result
 
 
 if __name__ == "__main__":
     # comment out next line after running file once. 
-    CreateDatabase()
+    # CreateDatabase()
 
-    # once you have created the database uncomment line 52.
+    # once you have created the database comment out line 43 and uncomment line 59.
    
     # sample SQL query to select the rows where the patient "10339b10-3cd1-4ac3-ac13-ec26728cb592" is in. Currently limited to 1
     # you can change this query to test different ones.
-    # ExecuteQuery('select * from test where PATIENT="10339b10-3cd1-4ac3-ac13-ec26728cb592" limit 1')
+    print(ExecuteQuery('select * from test where PATIENT="10339b10-3cd1-4ac3-ac13-ec26728cb592" limit 1'))
