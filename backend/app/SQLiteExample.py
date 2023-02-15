@@ -1,16 +1,17 @@
 import csv
 import sqlite3
+from constants import *
 
 def CreateDatabase():
     try:
         # importing csv and extracting the data
-        with open('./data/observations_clean.csv','r') as file:
+        with open(DATA_CSV,'r') as file:
             reader = csv.DictReader(file)
             observations = [(i['DATE'],i['PATIENT'],i['ENCOUNTER'],i['CODE'],i['DESCRIPTION'],
                 i['VALUE'],i['UNITS'],i['TYPE']) for i in reader]
             
         # connect to database. Will create test.db if it does not yet exist
-        connection = sqlite3.connect('./test.db')
+        connection = sqlite3.connect(DB_PATH)
         # creates a cursor that allows interaction with the database
         cursor = connection.cursor()
 
@@ -35,7 +36,7 @@ def CreateDatabase():
 
 def ExecuteQuery(query:str):
     # connect to database. Will create test.db if it does not yet exist
-    connection = sqlite3.connect('./test.db')
+    connection = sqlite3.connect(DB_PATH)
     # creates a cursor that allows interaction with the database
     cursor = connection.cursor()
 
