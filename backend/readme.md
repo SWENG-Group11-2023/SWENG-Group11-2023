@@ -12,3 +12,4 @@
 
 To exit the virtual environnement you can run `deactivate` and to reactivate use same command as step 4
 **Make sure to reactivate venv before working in the project again**
+hello
