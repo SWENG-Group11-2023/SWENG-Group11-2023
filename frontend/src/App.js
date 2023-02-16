@@ -1,8 +1,11 @@
 
 import {useState} from 'react';
+import useFetch from './useFetch'
+import "./App.css";
 
 const SearchBar = () => {
   const [message, setMessage] = useState('');
+
 
   const handleKeyDown = event => {
     console.log(event.key);
@@ -16,11 +19,14 @@ const SearchBar = () => {
       console.log('User pressed Enter ✅');
       console.log("Typed Word :" + message);
     }
-  };
+  }
 
+
+  
   return (
     <div>
        <p >Search bar!</p>
+       
       <input
         type="text"
         id="message"
@@ -31,12 +37,30 @@ const SearchBar = () => {
         message =""
       />
       <p>You typed: {message}</p>
+      
      
      
     </div>
-    
+
+
   );
+
 };
 
+function App(){
+  const {data, loading, error} = useFetch("https://v2.jokeapi.dev/joke/Any%22");
+  if (loading) return < h1> LOADING... </h1>
+  if (error) console.log(error)
+  if (data) {
+    return (
+      <div className="App">
+        <h1>{data?.setup} : {data?.delivery}</h1>
+      </div>
+    );
+  }
+}
 
-export default SearchBar;
+
+
+
+export default  {App,SearchBar};
