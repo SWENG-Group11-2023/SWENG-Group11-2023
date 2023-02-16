@@ -37,30 +37,32 @@ const SearchBar = () => {
         message =""
       />
       <p>You typed: {message}</p>
-      
-     
-     
     </div>
-
-
   );
-
 };
 
 function App(){
   const {data, loading, error} = useFetch("https://v2.jokeapi.dev/joke/Any%22");
-  if (loading) return < h1> LOADING... </h1>
-  if (error) console.log(error)
-  if (data) {
+  if(loading){
+    return <h1>LOADING ...</h1>
+  }
+  if(error){
+    return <h1>ERROR</h1>
+  }
+
+   if(data) {
     return (
-      <div className="App">
-        <h1>{data?.setup} : {data?.delivery}</h1>
-      </div>
+     <div>
+        <h1>{data.setup} : {data.delivery}</h1>
+        </div>
+      
     );
   }
 }
 
+const workingPage = {
+  SearchBar,
+  App
+}
+ export default workingPage;
 
-
-
-export default  {App,SearchBar};
