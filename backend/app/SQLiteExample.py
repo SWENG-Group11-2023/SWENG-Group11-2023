@@ -29,6 +29,7 @@ def CreateDatabase():
         )
         """)
         cursor.executemany('INSERT INTO test (DATE,PATIENT,ENCOUNTER,CODE,DESCRIPTION,VALUE,UNITS,TYPE) VALUES (?,?,?,?,?,?,?,?)',observations)
+        connection.commit()
         cursor.close()
         connection.close()
     except sqlite3.Error as error:

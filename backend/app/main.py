@@ -29,3 +29,13 @@ async def read_item(item_id: int):
 async def get_patient(patient_id: str):
     query = f'select * from test where PATIENT="{patient_id}"'
     return ExecuteQuery(query=query)
+
+@app.get("/encounter/{encounter_id}")
+async def get_patient(encounter_id: str):
+    query = f'select * from test where ENCOUNTER="{encounter_id}"'
+    return ExecuteQuery(query=query)
+
+@app.get("/code/{code_id}")
+async def get_patient(code_id: str):
+    query = f'select * from test where CODE="{code_id}"'
+    return ExecuteQuery(query=query)
