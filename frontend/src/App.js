@@ -6,7 +6,6 @@ const App = () => {
       <div>enter patient ID:</div>
       <DataFetching/>
     </div>
-    
   );
 };
 export default  App;
