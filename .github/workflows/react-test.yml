@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: "./frontend"
+        working-directory: "frontend"
     strategy:
       matrix:
         node-version: [14.x, 16.x, 18.x, 19.x]
@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
-          working-directory: "frontend"
+          cache-dependency-path: "**/package-lock.json"
       - name: Run Test
         run: |
           cd ./frontend
