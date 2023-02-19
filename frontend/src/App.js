@@ -1,4 +1,4 @@
-import DataFetching from './DataFetching';
+import {DataFetching} from './DataFetching';
 
 const App = () => {
   return (
