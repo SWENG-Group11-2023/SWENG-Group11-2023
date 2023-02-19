@@ -4,8 +4,7 @@ import {  useState , useEffect} from "react";
 
 
 var data = ({})
-var dataPionts = ({})
-var id =({})
+
 function DataFetching() {
   const [dataPionts, setDataPionts] = useState({})
     const [id, setId] = useState({})
@@ -32,4 +31,4 @@ function DataFetching() {
     </div>
   )
 }
-export  {DataFetching, dataPionts, data, id};
+export  {DataFetching};
