@@ -20,7 +20,7 @@ Once you the virtual environment is succesfully installed make sure to have it a
 
 You should see the following [Info] statements after you have run the command: 
 ```
-INFO:     Will watch for changes in these directories: ['C:\\Users\\User\\Documents\\Year 3\\Semester 2\\SWENG\\SWENG-Group11-2023\\backend\\app']
+INFO:     Will watch for changes in these directories: ['~\backend\\app']
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
 INFO:     Started reloader process [3436] using WatchFiles        
 INFO:     Started server process [9444]
