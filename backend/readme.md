@@ -13,7 +13,7 @@
 To exit the virtual environnement you can run `deactivate` and to reactivate use same command as step 4
 **Make sure to reactivate venv before working in the project again**
 
-# Running the API Server
+## Running the API Server
 Once you the virtual environment is succesfully installed make sure to have it activated and do the following. 
 1. CD to /backend/app
 2. Run the command: `uvicorn main:app --reload`
