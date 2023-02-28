@@ -3,12 +3,11 @@ import axios from 'axios';
 import {  useState , useEffect} from "react";
 
 
-var data = ({})
+var data = ({});
 
 function DataFetching() {
   const [dataPionts, setDataPionts] = useState({})
     const [id, setId] = useState({})
-
 
     useEffect(()=>{
       const getData = async () => {
