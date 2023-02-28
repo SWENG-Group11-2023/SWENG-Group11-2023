@@ -1,6 +1,6 @@
 # SWENG-2023
 
-Link to [data](https://ibm.box.com/s/agr9cfdru7ks9ztp7gabpjx1xu9ah6gu).
+Link to public synthea data (we only use the observations.csv file): [here](https://synthetichealth.github.io/synthea-sample-data/downloads/synthea_sample_data_csv_apr2020.zip).
 
 ## Git workflow
 In order to submit your code, you should use a workflow like this. This makes sure that the right versions of the code are in the repo, and that we're all working off the same code. 
