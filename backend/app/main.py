@@ -3,6 +3,7 @@ from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 from sqlite import execute_query
 from process import process_query
+from constants import *
 
 # config stuff to expose to frontend application
 middlewares = [
@@ -14,7 +15,8 @@ middlewares = [
     )
 ]
 
-app = FastAPI(middleware=middlewares)
+# app = FastAPI(middleware=middlewares)
+app = FastAPI()
 
 # returns hello world on the root
 @app.get("/")
@@ -23,11 +25,11 @@ async def root():
 
 
 @app.get("/patient/{patient_id}")
-async def get_patient(patient_id: str):
-    query = f'select * from test where PATIENT="{patient_id}"'
+async def get_patient(patient_id: str = ""):
+    query = f'select * from {DB_TABLE_NAME} where PATIENT="{patient_id}"'
     return execute_query(query)
 
 # use nlp to process query
-@app.get("/{query}")
-async def get_patient(query: str):
-    return process_query(query)
+@app.get("/query/")
+async def query_with_nlp(query: str = ""):
+    return process_query(query) 

@@ -48,6 +48,5 @@ def test_db():
     print(execute_query(f'select * from {DB_TABLE_NAME} where PATIENT="10339b10-3cd1-4ac3-ac13-ec26728cb592" limit 1'))
 
 if __name__ == "__main__":
-    # create_table(DB_TABLE_NAME)
-    # test_db()
-    pass
+    create_table(DB_TABLE_NAME)
+    test_db()
