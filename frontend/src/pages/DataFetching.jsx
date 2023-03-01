@@ -28,11 +28,10 @@ function DataFetching() {
     onChange={e => setId(e.target.value)}
     />
     
-      <h3>Patient ID: 
-      </h3>
-      
+      <h3>Patient ID: </h3>
       {dataPionts.data ? <h2>{dataPionts.data}</h2> : null}
     </div>
+    
   )
 }
 export  {DataFetching};
