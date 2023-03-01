@@ -48,3 +48,10 @@ main{
 .icon, link_text{
   font-size: 20px;
 }
+.Graph{
+  text-align: center;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  
+}

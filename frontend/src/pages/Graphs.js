@@ -1,5 +1,5 @@
 import react, { useState, useRef , PureComponent} from 'react';
-import { PieChart , Pie, BarChart, Bar,  LineChart, Line,} from 'recharts';
+import { PieChart , Pie, BarChart, Bar,  LineChart, Line, Tooltip,CartesianGrid,XAxis,YAxis,Legend} from 'recharts';
 
 function Graph() {
   const data = [ {name:"facebook", value: 20},
@@ -9,26 +9,78 @@ function Graph() {
   
 
   return (
-    <>
-        <BarChart width={150} height={40} data={data}>
+    <div style={{textAlign: "center"}} > 
+  
+    <div className="Graph">
+
+    
+    <PieChart width={350} height={350}>
+    
+    <Pie
+      margin ={{
+        top: 5,
+        right: 30,
+        left: 70,
+        bottom: 50
+      }}
+      dataKey="value"
+      isAnimationActive={false}
+      data={data}
+      cx="50%"
+      cy="50%"
+      outerRadius={80}
+      fill="#8884d8"
+      label
+    />
+    <Tooltip />
+  </PieChart>
+  <BarChart
+          width={400}
+          height={300}
+          data={data}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 70,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
           <Bar dataKey="value" fill="#8884d8" />
+        
         </BarChart>
-        <PieChart width={400} height={400}>
-          <Pie
-            dataKey="value"
-            isAnimationActive={false}
-            data={data}
-            cx="30%"
-            cy="40%"
-            outerRadius={80}
-            fill="#8884d8"
-            label
-          />
-        </PieChart>
-        <LineChart width={300} height={100} data={data}>
-          <Line type="monotone" dataKey="pv" stroke="#8884d8" strokeWidth={2} />
-        </LineChart>
-    </>
+        </div>
+        <div>
+        <LineChart
+        width={500}
+        height={300}
+        data={data}
+        margin={{
+          top: 5,
+          right: 30,
+          left: 50,
+          bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        <Legend />
+        <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
+        
+      </LineChart>
+
+      
+      
+        </div>
+        
+  </div>
+
   );
 }
 
