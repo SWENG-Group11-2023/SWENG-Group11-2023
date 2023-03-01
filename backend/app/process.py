@@ -109,7 +109,7 @@ if __name__ == "__main__":
 
     #descriptions_to_json() #uncomment to generate JSON file containing all patient descriptions
 
-    rows = process_query("give me a list of patients total cholesterol")
-    print(rows)
+    data = process_query("give me a list of the patients' status of HIV")
+    print(data)
 
     
