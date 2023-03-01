@@ -1,9 +1,11 @@
 import os
 import json
 import nltk
-from nltk.corpus import stopwords
+from nltk.corpus import stopwords, wordnet
 from nltk.tokenize import word_tokenize
-from sqlite import *
+from constants import *
+from sqlite import execute_query
+import numpy as np
 
 
 def descriptions_to_json():
@@ -23,13 +25,8 @@ def descriptions_to_json():
 def descriptions_list():
     with open ('descriptions.json', 'r') as descriptions_json_file:
         return json.loads(descriptions_json_file.read())
-
-
-def process_query(query):
-    nltk.data.path = [os.getcwd()] # keep, searches for corpora in current directory
-
-    # query_with_spaces = ''.join(' ' if letter == '+' else letter for letter in query).lower()
     
+def remove_stopwords(query):
     english_stopwords = stopwords.words("english")
     query_tokens = word_tokenize(query.lower())
     
@@ -38,14 +35,72 @@ def process_query(query):
         if (word not in english_stopwords and word.isalpha()):
             query_without_stops.append(word)
 
-    return query_without_stops
+    return ' '.join(query_without_stops)
+
+def best_synset_for_word(word):
+    synsets = wordnet.synsets(word)
+    if (len(synsets) > 0):
+        return synsets[0]
+    return None
+
+
+
+def closest_description(query, descriptions):
+    score = np.zeros(len(descriptions), dtype=float)
+    split_query = query.split()
+
+    query_synsets = []
+    for word in split_query:
+        synset = best_synset_for_word(word)
+        if synset is not None:
+            query_synsets.append(synset)
+
+
+    for i, description in enumerate(descriptions):
+        
+        description_words = remove_stopwords(description).split()
+        description_words_synsets = []
+        for word in description_words:
+            synset = best_synset_for_word(word)
+
+            if synset is not None:
+                description_words_synsets.append(synset) 
+
+        
+        for desc_word_synset in description_words_synsets:
+
+            for synset in query_synsets:
+                score[i] += wordnet.wup_similarity(synset, desc_word_synset)
+        
+        if (len(description_words_synsets) * len(query_synsets) != 0):
+            score[i] /= len(description_words_synsets) * len(query_synsets)
+        else:
+            score[i] = 0
+        
+
+    # return score
+    return descriptions[np.nanargmax(score)]
+
+def process_query(query):
+    nltk.data.path = [os.getcwd()] # keep, searches for corpora in current directory
+
+    # query_with_spaces = ''.join(' ' if letter == '+' else letter for letter in query).lower()
+    
+    query_without_stops = remove_stopwords(query)
+    descriptions = descriptions_list()
+    best_description = closest_description(query_without_stops, descriptions)
+    rows = execute_query(f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description}"')
+    return rows
 
 
 if __name__ == "__main__":
-    # if using nltk.download(), set download_dir=os.getcwd() as parameter
-    
+    nltk.data.path = [os.getcwd()]
+    # use this to download
+    # nltk.download("some-package", download_dir=os.getcwd)   
+
     #descriptions_to_json() #uncomment to generate JSON file containing all patient descriptions
 
-    answer = process_query("What is the average body height?")
-    print(answer)
+    rows = process_query("give me a list of the potassium of patients")
+    print(rows)
+
     
