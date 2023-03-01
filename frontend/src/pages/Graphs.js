@@ -9,19 +9,20 @@ function Graph() {
   
 
   return (
-    <div style={{textAlign: "center"}} > 
+    <div style={{textAlign: "center"}}  > 
   
-    <div className="Graph">
+    <div className="graph_orientation">
 
     
     <PieChart width={350} height={350}>
     
     <Pie
+      
       margin ={{
-        top: 5,
-        right: 30,
-        left: 70,
-        bottom: 50
+        top: 20,
+        right: 20,
+        left: 20,
+        bottom: 20
       }}
       dataKey="value"
       isAnimationActive={false}
@@ -35,14 +36,14 @@ function Graph() {
     <Tooltip />
   </PieChart>
   <BarChart
-          width={400}
-          height={300}
+          width={350}
+          height={350}
           data={data}
           margin={{
-            top: 5,
-            right: 30,
-            left: 70,
-            bottom: 5,
+            top: 20,
+            right: 20,
+            left: 20,
+            bottom: 20,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />
@@ -56,14 +57,14 @@ function Graph() {
         </div>
         <div>
         <LineChart
-        width={500}
-        height={300}
+        width={350}
+        height={350}
         data={data}
         margin={{
-          top: 5,
-          right: 30,
-          left: 50,
-          bottom: 5,
+          top: 20,
+          right: 20,
+          left: 10,
+          bottom: 20,
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />
@@ -74,9 +75,6 @@ function Graph() {
         <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
         
       </LineChart>
-
-      
-      
         </div>
         
   </div>
