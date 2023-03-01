@@ -81,6 +81,13 @@ def closest_description(query, descriptions):
     # return score
     return descriptions[np.nanargmax(score)]
 
+def format_rows_for_graphing(rows):
+    data = []
+    for row in rows:
+        data.append({"name": row[PATIENT_ID_COLUMN], "uv": row[VALUE_COLUMN], "pv": row[UNITS_COLUMN], "amt": row[TYPE_COLUMN]})
+
+    return data
+
 def process_query(query):
     nltk.data.path = [os.getcwd()] # keep, searches for corpora in current directory
 
@@ -89,8 +96,10 @@ def process_query(query):
     query_without_stops = remove_stopwords(query)
     descriptions = descriptions_list()
     best_description = closest_description(query_without_stops, descriptions)
-    rows = execute_query(f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description}"')
-    return rows
+    
+    rows = execute_query(f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description}"')
+    data = format_rows_for_graphing(rows)
+    return data
 
 
 if __name__ == "__main__":
@@ -100,7 +109,7 @@ if __name__ == "__main__":
 
     #descriptions_to_json() #uncomment to generate JSON file containing all patient descriptions
 
-    rows = process_query("give me a list of the potassium of patients")
+    rows = process_query("give me a list of patients total cholesterol")
     print(rows)
 
     
