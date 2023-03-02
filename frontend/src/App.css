@@ -57,7 +57,7 @@ main{
 .icon, link_text{
   font-size: 20px;
 }
-.Graph{
+.graph_orientation{
   text-align: center;
   display: flex;
   justify-content: space-around;
