@@ -7,6 +7,7 @@
   display:flex;
 }
 main{
+	background-color:rgb(172, 232, 160);
   width: 100%;
   padding: 20px;
 }
@@ -101,7 +102,7 @@ nav {
 	align-items: center;
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 945px) {
 	header .nav-btn {
 		visibility: visible;
 		opacity: 1;

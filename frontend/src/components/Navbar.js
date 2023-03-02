@@ -15,10 +15,10 @@ function Navbar() {
 		<header>
 			<h3>SWENG 2023 GROUP 11</h3>
 			<nav ref={navRef}>
-				<a href="/#">Dashboard</a>
-				<a href="/#">Our clients</a>
-				<a href="/#">Our group members</a>
-				<a href="/#">Project specifications</a>
+				<a href="/Dashboard">Dashboard</a>
+				<a href="/Clients">Our clients</a>
+				<a href="/Group">Our group members</a>
+				<a href="/Project">Project specifications</a>
 				<button
 					className="nav-btn nav-close-btn"
 					onClick={showNavbar}>
