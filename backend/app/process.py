@@ -84,7 +84,7 @@ def closest_description(query, descriptions):
 def format_rows_for_graphing(rows):
     data = []
     for row in rows:
-        data.append({"name": row[PATIENT_ID_COLUMN], "uv": row[VALUE_COLUMN], "pv": row[UNITS_COLUMN], "amt": row[TYPE_COLUMN]})
+        data.append({"name": row[PATIENT_ID_COLUMN], "value": row[VALUE_COLUMN]})
 
     return data
 
