@@ -1,14 +1,14 @@
 import React from 'react';
-import { useState, useEffect } from "react";
 import axios from 'axios';
+import { useState, useEffect } from "react";
 
 
-var data = ({})
+var data = ({});
+
 
 function DataFetching() {
     const [dataPionts, setDataPionts] = useState({})
     const [id, setId] = useState({})
-
 
     useEffect(() => {
         const getData = async () => {
@@ -27,8 +27,11 @@ function DataFetching() {
                 value={id}
                 onChange={e => setId(e.target.value)}
             />
-            {dataPionts.data ? <h2>patient: {dataPionts.data}</h2> : null}
+
+            <h3>Patient ID: </h3>
+            {dataPionts.data ? <h2>{dataPionts.data}</h2> : null}
         </div>
+
     )
 }
 export { DataFetching };
