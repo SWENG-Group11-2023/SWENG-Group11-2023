@@ -18,12 +18,12 @@ def descriptions_to_json():
 
     descriptions_json_string = json.dumps(descriptions)
 
-    with open('descriptions.json', 'w') as descriptions_json_file:
+    with open(DESCRIPTIONS, 'w') as descriptions_json_file:
         descriptions_json_file.write(descriptions_json_string)
 
 
 def descriptions_list():
-    with open ('descriptions.json', 'r') as descriptions_json_file:
+    with open (DESCRIPTIONS, 'r') as descriptions_json_file:
         return json.loads(descriptions_json_file.read())
     
 def remove_stopwords(query):
