@@ -70,7 +70,7 @@ def closest_description(query, descriptions):
         for desc_word_synset in description_words_synsets:
 
             for synset in query_synsets:
-                score[i] += wordnet.wup_similarity(synset, desc_word_synset)
+                score[i] += wordnet.path_similarity(synset, desc_word_synset)
         
         if (len(description_words_synsets) * len(query_synsets) != 0):
             score[i] /= len(description_words_synsets) * len(query_synsets)
