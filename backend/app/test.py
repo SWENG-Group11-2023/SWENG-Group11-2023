@@ -43,14 +43,14 @@ def test_format_rows_for_graphing():
     test_result = format_rows_for_graphing([('2011-07-28 15:02:18', '1d604da9-9a81-4ba9-80c2-de3375d59b40', 'b85c339a-6076-43ed-b9d0-9cf013dec49d',
                                              '8302-2', 'Body Height', '181.0', 'cm', 'numeric')])
     
-    expected_result = [{'name': '1d604da9-9a81-4ba9-80c2-de3375d59b40', 'uv': '181.0', 'pv': 'cm', 'amt': 'numeric'}]
+    expected_result = [{'name': '1d604da9-9a81-4ba9-80c2-de3375d59b40', 'value': '181.0'}]
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
 
 
     test_result = format_rows_for_graphing([('2012-01-23 17:45:28', '034e9e3b-2def-4559-bb2a-7850888ae060', 'e88bc3a9-007c-405e-aabc-792a38f4aa2b',
                                              '8480-6', 'Systolic Blood Pressure', '119.0', 'mm[Hg]', 'numeric')])
     
-    expected_result = [{'name': '034e9e3b-2def-4559-bb2a-7850888ae060', 'uv': '119.0', 'pv': 'mm[Hg]', 'amt': 'numeric'}]
+    expected_result = [{'name': '034e9e3b-2def-4559-bb2a-7850888ae060', 'value': '119.0',}]
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
 
     test_result = format_rows_for_graphing([('2012-01-23 17:45:28', '034e9e3b-2def-4559-bb2a-7850888ae060', 'e88bc3a9-007c-405e-aabc-792a38f4aa2b', 
@@ -62,23 +62,23 @@ def test_format_rows_for_graphing():
                         'kg/m2', 'numeric'), ('2012-01-23 17:45:28', '034e9e3b-2def-4559-bb2a-7850888ae060', 'e88bc3a9-007c-405e-aabc-792a38f4aa2b',
                         '8462-4', 'Diastolic Blood Pressure', '82.0', 'mm[Hg]', 'numeric')])
     
-    expected_result = [{'name': '034e9e3b-2def-4559-bb2a-7850888ae060', 'uv': '193.3', 'pv': 'cm', 'amt': 'numeric'}, {'name': '034e9e3b-2def-4559-bb2a-7850888ae060',
-                        'uv': '2.0', 'pv': '{score}', 'amt': 'numeric'}, {'name': '034e9e3b-2def-4559-bb2a-7850888ae060', 'uv': '87.8', 'pv': 'kg', 'amt': 'numeric'},
-                        {'name': '034e9e3b-2def-4559-bb2a-7850888ae060', 'uv': '23.5', 'pv': 'kg/m2', 'amt': 'numeric'}, {'name': '034e9e3b-2def-4559-bb2a-7850888ae060',
-                        'uv': '82.0', 'pv': 'mm[Hg]', 'amt': 'numeric'}]
+    expected_result = [{'name': '034e9e3b-2def-4559-bb2a-7850888ae060', 'value': '193.3'}, {'name': '034e9e3b-2def-4559-bb2a-7850888ae060',
+                        'value': '2.0'}, {'name': '034e9e3b-2def-4559-bb2a-7850888ae060', 'value': '87.8',},
+                        {'name': '034e9e3b-2def-4559-bb2a-7850888ae060', 'value': '23.5'}, {'name': '034e9e3b-2def-4559-bb2a-7850888ae060',
+                        'value': '82.0'}]
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
 
 def test_closest_description():
-    test_result = closest_description("weight")
+    test_result = closest_description("weight", descriptions_list())
     expected_result = "Body Weight"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
 
-    test_result = closest_description("height")
+    test_result = closest_description("height", descriptions_list())
     expected_result = "Body Height"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
 
-    test_result = closest_description("pain severity")
+    test_result = closest_description("pain severity", descriptions_list())
     expected_result = "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
