@@ -18,9 +18,10 @@ export default function App() {
             <MDBCardTitle>Austeja Pakulyte</MDBCardTitle>
             <MDBCardText>
               3rd Year - Intergrated Computer Science
+              Management & Frontend development
             </MDBCardText>
             <div class="text-center">
-            <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/pakulyta'>Github </MDBBtn>
+            <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/pakulyta'>Github</MDBBtn>
             </div>
           </MDBCardBody>
         </MDBCard>
@@ -32,6 +33,7 @@ export default function App() {
             <MDBCardTitle>Constantin Pusch</MDBCardTitle>
             <MDBCardText>
               3rd Year - Computer Science & Business
+              Management & Backend development
             </MDBCardText>
             <div class="text-center">
             <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/cpusch'>Github</MDBBtn>
@@ -46,6 +48,7 @@ export default function App() {
             <MDBCardTitle>Kevin Morley</MDBCardTitle>
             <MDBCardText>
               3rd Year - Intergrated Computer Science
+              Product Owner
             </MDBCardText>
             <div class="text-center">
             <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/k-e-v-i-n17'>Github</MDBBtn>
@@ -59,7 +62,8 @@ export default function App() {
           <MDBCardBody>
             <MDBCardTitle>Andrew Furey</MDBCardTitle>
             <MDBCardText>
-              2nd Year - 
+              2nd Year -
+              Backend Development 
             </MDBCardText>
             <div class="text-center">
             <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/anfurey'>Github</MDBBtn>
@@ -74,6 +78,7 @@ export default function App() {
             <MDBCardTitle>Anthony Oisin Gavril </MDBCardTitle>
             <MDBCardText>
               2nd Year - 
+              Frontend development
             </MDBCardText>
             <div class="text-center">
             <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/onion-mints'>Github</MDBBtn>
@@ -88,6 +93,7 @@ export default function App() {
             <MDBCardTitle>Isobel Radford-Dodd</MDBCardTitle>
             <MDBCardText>
               2nd Year - 
+              Frontend development
             </MDBCardText>
             <div class="text-center">
             <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/IsobelRadford-Dodd'>Github</MDBBtn>
@@ -102,6 +108,7 @@ export default function App() {
             <MDBCardTitle>Luke Barry</MDBCardTitle>
             <MDBCardText>
               2nd Year - 
+              Frontend development
             </MDBCardText>
             <div class="text-center">
             <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/Luke-Barry'>Github</MDBBtn>
@@ -116,6 +123,7 @@ export default function App() {
             <MDBCardTitle>Minghim Foun</MDBCardTitle>
             <MDBCardText>
               2nd Year - 
+              Backend development
             </MDBCardText>
             <div class="text-center">
             <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/OscarFoun'>Github</MDBBtn>
@@ -130,6 +138,7 @@ export default function App() {
             <MDBCardTitle>Samuel Forster</MDBCardTitle>
             <MDBCardText>
               2nd Year - 
+              Backend development
             </MDBCardText>
             <div class="text-center">
             <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/SamPFF'>Github</MDBBtn>
