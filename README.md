@@ -10,7 +10,7 @@ We aim to create a web application that is a dashboard which allows users to int
 
 We are using public synthetic patient data made using Synthea. The specific file we use is the observations.csv file which can be found [here](https://synthetichealth.github.io/synthea-sample-data/downloads/synthea_sample_data_csv_apr2020.zip).
 
-A link to the website hosting the data, SyntheticMass can be found [here](https://synthea.mitre.org/).
+A link to the website hosting the data, SyntheticMass, can be found [here](https://synthea.mitre.org/).
 
 ## Prerequisites
 
