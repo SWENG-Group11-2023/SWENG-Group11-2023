@@ -1,19 +1,35 @@
-# SWENG-2023
+# Patient-Centric Question Answering System in collaboration with IBM Research
 
-Link to [data](https://ibm.box.com/s/agr9cfdru7ks9ztp7gabpjx1xu9ah6gu).
+Hello and welcome to our project for the Software Engineering Project module in Trinity College Dublin. We are group 11 and we are working together with IBM Research to improve analyzation of clinical trial results in an attempt to help with solving important healthcare problems.
 
-## Git workflow
-In order to submit your code, you should use a workflow like this. This makes sure that the right versions of the code are in the repo, and that we're all working off the same code. 
+## Our Goal
 
-1. If you haven't already, use `git pull` on the whatever branch your on. This is especially the case for dev and main branches. 
-2. After pulling the branch, use `git checkout dev` to get on to the dev branch.
-3. If you don't have the dev branch on your local machine, use `git fetch` and then `git switch dev` to get the remote dev branch. 
-3. When you're adding code,(assuming you've just used git pull), you can use `git checkout -b dev-f<BRANCH_NAME>` eg `git checkout -b dev-f-myfeature` The f in this case is for a feature branch.
-4. Now in your feature branch you can add your code. 
-5. When you're adding code, add it in small pieces, not all at once. 
-6. When you've finished a small piece you can add it to staging with `git add myfile.js` You can also do this with vscode or some other editor. 
-7. Then commit your code using `git commit -m"Some brief message telling us what the code is doing"`
-8. When you've commit your code, then you can push your branch with `git push -u origin dev-f-<BRANCH_NAME>` eg `git push -u origin dev-f-myfeature`
-9. Go the repository on github.com, and make a pull request to the DEV BRANCH. ONLY PUSH TO THE DEV BRANCH, unless there is some reason not to. 
-10. Assign some other person to review the code, and then they will merge the code in to dev.
-11. In your own dev branch you can start all over again by using `git pull`
+We aim to create a web application that is a dashboard which allows users to interact with data in an intuitive way. Users will be able to interact with the data using Natural Language, specifying what they wish to extract from the data for example "Sort patients with diabetes by height". They will then be presented with visualisations of this which will help with data analysis and they will also be able to download the extracted data in a human readable file.
+
+## Data we used
+
+We are using public synthetic patient data made using Synthea. The specific file we use is the observations.csv file which can be found [here](https://synthetichealth.github.io/synthea-sample-data/downloads/synthea_sample_data_csv_apr2020.zip).
+
+A link to the website hosting the data, SyntheticMass, can be found [here](https://synthea.mitre.org/).
+
+## Prerequisites
+
+TBD
+
+## How to Run
+
+TBD
+
+## Members of the Team
+| Name                  | Year        | Course                        |
+| :---                  |    :----:   | :---                          |
+| Austeja Pakulyte      | 3rd Year    | Computer Science              |
+| Constantin Pusch      | 3rd Year    | Computer Science & Business   |
+| Kevin Morley          | 3rd Year    | Computer Science              |
+| Andrew Furey          | 2nd Year    | |
+| Anthony Oisin Gavril  | 2nd Year    | |
+| Isobel Radford-Dodd   | 2nd Year    | |
+| Luke Barry            | 2nd Year    | |
+| Minghim Foun          | 2nd Year    | |
+| Samuel Forster        | 2nd Year    | |
+
