@@ -20,7 +20,7 @@ export default function App() {
               3rd Year - Intergrated Computer Science
             </MDBCardText>
             <div class="text-center">
-            <MDBBtn style={{ backgroundColor: '#295c38' }} href='https://github.com/pakulyta'>Github</MDBBtn>
+            <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/pakulyta'>Github </MDBBtn>
             </div>
           </MDBCardBody>
         </MDBCard>
@@ -34,7 +34,7 @@ export default function App() {
               3rd Year - Computer Science & Business
             </MDBCardText>
             <div class="text-center">
-            <MDBBtn style={{ backgroundColor: '#295c38' }} href='https://github.com/cpusch'>Github</MDBBtn>
+            <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/cpusch'>Github</MDBBtn>
             </div>
           </MDBCardBody>
         </MDBCard>
@@ -48,7 +48,7 @@ export default function App() {
               3rd Year - Intergrated Computer Science
             </MDBCardText>
             <div class="text-center">
-            <MDBBtn style={{ backgroundColor: '#295c38' }} href='https://github.com/k-e-v-i-n17'>Github</MDBBtn>
+            <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/k-e-v-i-n17'>Github</MDBBtn>
             </div>
           </MDBCardBody>
         </MDBCard>
@@ -62,7 +62,7 @@ export default function App() {
               2nd Year - 
             </MDBCardText>
             <div class="text-center">
-            <MDBBtn style={{ backgroundColor: '#295c38' }} href='https://github.com/anfurey'>Github</MDBBtn>
+            <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/anfurey'>Github</MDBBtn>
             </div>
           </MDBCardBody>
         </MDBCard>
@@ -76,7 +76,7 @@ export default function App() {
               2nd Year - 
             </MDBCardText>
             <div class="text-center">
-            <MDBBtn style={{ backgroundColor: '#295c38' }} href='https://github.com/onion-mints'>Github</MDBBtn>
+            <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/onion-mints'>Github</MDBBtn>
             </div>
           </MDBCardBody>
         </MDBCard>
@@ -90,7 +90,7 @@ export default function App() {
               2nd Year - 
             </MDBCardText>
             <div class="text-center">
-            <MDBBtn style={{ backgroundColor: '#295c38' }} href='https://github.com/IsobelRadford-Dodd'>Github</MDBBtn>
+            <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/IsobelRadford-Dodd'>Github</MDBBtn>
             </div>
           </MDBCardBody>
         </MDBCard>
@@ -104,7 +104,7 @@ export default function App() {
               2nd Year - 
             </MDBCardText>
             <div class="text-center">
-            <MDBBtn style={{ backgroundColor: '#295c38' }} href='https://github.com/Luke-Barry'>Github</MDBBtn>
+            <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/Luke-Barry'>Github</MDBBtn>
             </div>
           </MDBCardBody>
         </MDBCard>
@@ -118,7 +118,7 @@ export default function App() {
               2nd Year - 
             </MDBCardText>
             <div class="text-center">
-            <MDBBtn style={{ backgroundColor: '#295c38' }} href='https://github.com/OscarFoun'>Github</MDBBtn>
+            <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/OscarFoun'>Github</MDBBtn>
             </div>
           </MDBCardBody>
         </MDBCard>
@@ -132,7 +132,7 @@ export default function App() {
               2nd Year - 
             </MDBCardText>
             <div class="text-center">
-            <MDBBtn style={{ backgroundColor: '#295c38' }} href='https://github.com/SamPFF'>Github</MDBBtn>
+            <MDBBtn style={{ backgroundColor: '#295c38' }} target="_blank" href='https://github.com/SamPFF'>Github</MDBBtn>
             </div>
           </MDBCardBody>
         </MDBCard>
