@@ -1,6 +1,6 @@
 # Patient-Centric Question Answering System in collaboration with IBM Research
 
-Hello and welcome to our project for the Software Engineering Project module in Trinity College Dublin. We are group 11 and we are working together with IBM Research to improve analyzation of clinical trial results in an attempt to help with solving important healthcare problems.
+Hello and welcome to our project for the Software Engineering Project module in Trinity College Dublin. We are group 11 and we are working together with IBM Research to improve analysation of clinical trial results in an attempt to help with solving important healthcare problems.
 
 ## Our Goal
 
