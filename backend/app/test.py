@@ -1,5 +1,5 @@
 from sqlite import execute_query
-from process import process_query, format_rows_for_graphing, closest_description, best_synset_for_word, remove_stopwords, descriptions_list
+from process import process_query, format_single_value, format_rows_for_graphing, best_query_metric, closest_description, best_synset_for_word, remove_stopwords, descriptions_list
 from constants import *
 from nltk.corpus import wordnet
 
@@ -38,6 +38,14 @@ def test_process_query():
     expected_result = format_rows_for_graphing(execute_query(f'select * from {DB_TABLE_NAME} where DESCRIPTION="Total Cholesterol"'))
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
+    test_result = process_query("give me the mean of the patients' respiratory rate")
+    expected_result = "(14.018164435946463)"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
+
+    test_result = process_query("give me the maximum of the patients' respiratory rate")
+    expected_result = "(16.0)"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
+
 
 def test_format_rows_for_graphing():
     test_result = format_rows_for_graphing([('2011-07-28 15:02:18', '1d604da9-9a81-4ba9-80c2-de3375d59b40', 'b85c339a-6076-43ed-b9d0-9cf013dec49d',
@@ -66,8 +74,33 @@ def test_format_rows_for_graphing():
                         'value': '2.0'}, {'name': '034e9e3b-2def-4559-bb2a-7850888ae060', 'value': '87.8',},
                         {'name': '034e9e3b-2def-4559-bb2a-7850888ae060', 'value': '23.5'}, {'name': '034e9e3b-2def-4559-bb2a-7850888ae060',
                         'value': '82.0'}]
-    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
+def test_format_single_value():
+    test_result = format_single_value([(14.018164435946463,)])
+    expected_result = "(14.018164435946463)"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
+    test_result = format_single_value([('16.0',)])
+    expected_result = "(16.0)"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
+def test_best_query_metric():
+    test_result = best_query_metric("give maximum patients respiratory rate")
+    expected_result = "MAX(VALUE)"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
+    test_result = best_query_metric("give minimum patients respiratory rate")
+    expected_result = "MIN(VALUE)"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
+    test_result = best_query_metric("give average patients respiratory rate")
+    expected_result = "AVG(VALUE)"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
+    test_result = best_query_metric("give mean patients respiratory rate")
+    expected_result = "AVG(VALUE)"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
 def test_closest_description():
     test_result = closest_description("weight", descriptions_list())
@@ -108,13 +141,15 @@ def test_remove_stopwords():
 
     test_result = remove_stopwords("give me a list of patients total cholesterol")
     expected_result = "give list patients total cholesterol"
-    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
 
 if __name__ == "__main__":
     test_execute_query()
     test_process_query()
     test_format_rows_for_graphing()
+    test_format_single_value()
+    test_best_query_metric()
     test_closest_description()
     test_best_synset_for_word()
     test_remove_stopwords()
