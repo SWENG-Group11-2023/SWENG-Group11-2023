@@ -1,16 +1,18 @@
 from sqlite import execute_query
-from process import process_query, format_rows_for_graphing, closest_description, best_synset_for_word, remove_stopwords, descriptions_list
+from process import *
 from constants import *
 from nltk.corpus import wordnet
 
 
 def test_execute_query():
     test_result = execute_query(f'select * from {DB_TABLE_NAME} where PATIENT="1d604da9-9a81-4ba9-80c2-de3375d59b40" limit 1')
-    expected_result = [('2011-07-28 15:02:18', '1d604da9-9a81-4ba9-80c2-de3375d59b40', 'b85c339a-6076-43ed-b9d0-9cf013dec49d', '8302-2', 'Body Height', '181.0', 'cm', 'numeric')]
+    expected_result = [('2011-07-28 15:02:18', '1d604da9-9a81-4ba9-80c2-de3375d59b40', 'b85c339a-6076-43ed-b9d0-9cf013dec49d', 
+                        '8302-2', 'Body Height', '181.0', 'cm', 'numeric')]
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
     test_result = execute_query(f'select * from {DB_TABLE_NAME} where DESCRIPTION="Systolic Blood Pressure" limit 1')
-    expected_result = [('2012-01-23 17:45:28', '034e9e3b-2def-4559-bb2a-7850888ae060', 'e88bc3a9-007c-405e-aabc-792a38f4aa2b', '8480-6', 'Systolic Blood Pressure', '119.0', 'mm[Hg]', 'numeric')]
+    expected_result = [('2012-01-23 17:45:28', '034e9e3b-2def-4559-bb2a-7850888ae060', 'e88bc3a9-007c-405e-aabc-792a38f4aa2b', 
+                        '8480-6', 'Systolic Blood Pressure', '119.0', 'mm[Hg]', 'numeric')]
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
     test_result = execute_query(f'select * from {DB_TABLE_NAME} where TYPE="numeric" limit 5')
