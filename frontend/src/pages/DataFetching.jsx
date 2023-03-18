@@ -11,14 +11,21 @@ function DataFetching() {
     const [id, setId] = useState({})
 
     useEffect(() => {
-        const getData = async () => {
-            data = await axios.get(`http://127.0.0.1:8000/patient/${id}`)
-            setDataPionts(data)
-        };
-        getData();
-    }, [id])
+            const getData = async () => {
+                // turns the user input into a form that the backend can read i.e. adding
+                data = backendReadableText(data);
 
-    console.log("data: ", dataPionts)
+                data = await axios.get(`http://127.0.0.1:8000/patient/${id}`)
+                setDataPionts(data)
+            };
+            getData();
+        }, [id])
+
+        console.log("data: ", dataPionts)
+        console.log(id);
+    
+    
+
 
     return (
         <div>
@@ -26,6 +33,7 @@ function DataFetching() {
                 type="text"
                 value={id}
                 onChange={e => setId(e.target.value)}
+                
             />
 
             <h3>Patient ID: </h3>
@@ -33,5 +41,13 @@ function DataFetching() {
         </div>
 
     )
+}
+function backendReadableText(userInput){
+    let charArray = userInput;
+    charArray = String(charArray);
+    let array = charArray.split("");
+    // I can change what the replacement character is depending on what the backend team has.
+    array = charArray.replaceAll(' ', "%");
+    return array;
 }
 export { DataFetching };
