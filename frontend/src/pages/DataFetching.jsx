@@ -12,7 +12,7 @@ function DataFetching() {
 
     useEffect(() => {
             const getData = async () => {
-                // turns the user input into a form that the backend can read i.e. adding
+                // turns the user input into a form that the backend can read
                 data = backendReadableText(data);
 
                 data = await axios.get(`http://127.0.0.1:8000/patient/${id}`)
@@ -47,7 +47,7 @@ function backendReadableText(userInput){
     charArray = String(charArray);
     let array = charArray.split("");
     // I can change what the replacement character is depending on what the backend team has.
-    array = charArray.replaceAll(' ', "%");
+    array = charArray.replaceAll(' ', "+");
     return array;
 }
 export { DataFetching };
