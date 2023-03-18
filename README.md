@@ -27,7 +27,7 @@ TBD
 | Constantin Pusch      | 3rd Year    | Computer Science & Business   |
 | Kevin Morley          | 3rd Year    | Computer Science              |
 | Andrew Furey          | 2nd Year    | |
-| Anthony Oisin Gavril  | 2nd Year    | |
+| Anthony Oisin Gavril  | 2nd Year    | Computer Science              |
 | Isobel Radford-Dodd   | 2nd Year    | |
 | Luke Barry            | 2nd Year    | |
 | Minghim Foun          | 2nd Year    | |
