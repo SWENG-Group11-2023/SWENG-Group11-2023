@@ -89,7 +89,6 @@ def format_rows_for_graphing(rows):
     return data
 
 def process_query(query):
-    nltk.data.path = [os.getcwd()] # keep, searches for corpora in current directory
 
     # query_with_spaces = ''.join(' ' if letter == '+' else letter for letter in query).lower()
     
@@ -103,12 +102,14 @@ def process_query(query):
 
 
 if __name__ == "__main__":
-    nltk.data.path = [os.getcwd()]
-    # use this to download
-    # nltk.download("some-package", download_dir=os.getcwd)   
-
     #descriptions_to_json() #uncomment to generate JSON file containing all patient descriptions
 
+    # automatically checks if nltk modules are up to date downloads if necessary
+    nltk.download('punkt')
+    nltk.download('stopwords')
+    nltk.download('averaged_perceptron_tagger')
+    nltk.download('wordnet')
+    nltk.download('vader_lexicon')
     data = process_query("give me a list of the patients' status of HIV")
     print(data)
 
