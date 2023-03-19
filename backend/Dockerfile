@@ -2,14 +2,17 @@ FROM python:3.10.5-buster
 
 RUN mkdir build
 
-WORKDIR /build
+WORKDIR /app
 
-COPY . .
+COPY ./requirements.txt .
+COPY ./app/*.* .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
 EXPOSE 80
 
-WORKDIR /build/app
+# ENV PYTHONPATH=/build/app
 
 CMD python -m uvicorn main:app --host 0.0.0.0 --port 80
+
+# python -m nltk.downloader punkt stopwords wordnet averaged_perceptron_tagger
