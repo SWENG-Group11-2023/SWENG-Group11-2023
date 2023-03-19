@@ -4,9 +4,17 @@ from starlette.middleware.cors import CORSMiddleware
 from sqlite import execute_query,create_db
 from process import process_query
 from constants import *
+import nltk
 
 # creates the db on startup if it does not already exist
 create_db()
+
+# checks if nltk packages are downloaded
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('wordnet')
+nltk.download('vader_lexicon')
 
 # config stuff to expose to frontend application
 middlewares = [
@@ -32,6 +40,6 @@ async def get_patient(patient_id: str = ""):
     return execute_query(query)
 
 # use nlp to process query
-@app.get("/query/")
+@app.get("/query/{query}")
 async def query_with_nlp(query: str = ""):
     return process_query(query) 
