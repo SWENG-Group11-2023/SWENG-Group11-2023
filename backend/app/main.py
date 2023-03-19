@@ -15,8 +15,7 @@ middlewares = [
     )
 ]
 
-# app = FastAPI(middleware=middlewares)
-app = FastAPI()
+app = FastAPI(middleware=middlewares)
 
 # returns hello world on the root
 @app.get("/")

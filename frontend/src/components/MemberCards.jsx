@@ -11,7 +11,7 @@ import {
 
 export default function App() {
   return (
-    <MDBRow className='row-cols-1 row-cols-md-3 g-4' >
+    <MDBRow className='row-cols-1 row-cols-md-3 g-4'>
       <MDBCol>
         <MDBCard>
           <MDBCardBody>
