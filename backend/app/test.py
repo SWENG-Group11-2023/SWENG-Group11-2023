@@ -4,6 +4,7 @@ from constants import *
 from nltk.corpus import wordnet
 
 
+
 def test_execute_query():
     test_result = execute_query(f'select * from {DB_TABLE_NAME} where PATIENT="1d604da9-9a81-4ba9-80c2-de3375d59b40" limit 1')
     expected_result = [('2011-07-28 15:02:18', '1d604da9-9a81-4ba9-80c2-de3375d59b40', 'b85c339a-6076-43ed-b9d0-9cf013dec49d', 
@@ -120,3 +121,9 @@ if __name__ == "__main__":
     test_closest_description()
     test_best_synset_for_word()
     test_remove_stopwords()
+else:
+    nltk.download('punkt')
+    nltk.download('stopwords')
+    nltk.download('averaged_perceptron_tagger')
+    nltk.download('wordnet')
+    nltk.download('vader_lexicon')
