@@ -77,7 +77,7 @@ export default function App() {
           <MDBCardBody>
             <MDBCardTitle>Anthony Oisin Gavril </MDBCardTitle>
             <MDBCardText>
-              2nd Year - 
+              2nd Year - Integrated Computer Science
               Frontend development
             </MDBCardText>
             <div class="text-center">
@@ -92,7 +92,7 @@ export default function App() {
           <MDBCardBody>
             <MDBCardTitle>Isobel Radford-Dodd</MDBCardTitle>
             <MDBCardText>
-              2nd Year - 
+              2nd Year - Computer Science & Business
               Frontend development
             </MDBCardText>
             <div class="text-center">
@@ -122,7 +122,7 @@ export default function App() {
           <MDBCardBody>
             <MDBCardTitle>Minghim Foun</MDBCardTitle>
             <MDBCardText>
-              2nd Year - 
+              2nd Year - Integrated Computer Science
               Backend development
             </MDBCardText>
             <div class="text-center">
