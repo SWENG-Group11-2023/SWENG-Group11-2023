@@ -104,6 +104,7 @@ def process_query(query):
 if __name__ == "__main__":
     #descriptions_to_json() #uncomment to generate JSON file containing all patient descriptions
 
+    # if db does not exists creates it
     create_db()
 
     # automatically checks if nltk modules are up to date downloads if necessary
