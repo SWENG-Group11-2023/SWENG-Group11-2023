@@ -177,3 +177,4 @@ yarn-error.log*
 *.db
 !production.db
 *.db-journal
+.vscode/
