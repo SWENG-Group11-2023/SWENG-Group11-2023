@@ -3,6 +3,7 @@ import json
 import nltk
 from nltk.corpus import stopwords, wordnet
 from nltk.tokenize import word_tokenize
+from nltk import pos_tag
 from constants import *
 from sqlite import execute_query
 import numpy as np
@@ -82,6 +83,19 @@ def closest_description(query, descriptions):
     # return score
     return descriptions[np.nanargmax(score)]
 
+def superlative(query):
+    split_query = query.split()
+    for word in split_query:
+        if pos_tag([word])[0][1] == 'JJS':
+            for syn in wordnet.synsets(word):
+                for i in syn.lemmas():
+                    if i.name() == 'high' or i.name() == 'great':
+                        return "MAX(VALUE)"     
+                    if i.name() == 'small' or i.name() == 'low':
+                        return "MIN(VALUE)"  
+        if pos_tag([word])[0][1] == 'JJR':
+            return "compare"
+    return "*"
 
 def best_query_metric(query):
     possible_metrics = ["list", "average", "maximum", "minimum"]
