@@ -5,6 +5,7 @@ import Graph from './Graphs';
 const Analytics = () => {
   return (
     <>
+    <DataFetching/>
     <Graph/>
     </>
   )
