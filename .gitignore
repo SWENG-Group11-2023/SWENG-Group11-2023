@@ -175,6 +175,5 @@ yarn-error.log*
 *.csv
 !observations*.csv
 *.db
-!production.db
 *.db-journal
 .vscode/
