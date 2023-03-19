@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
-from sqlite import execute_query
+from sqlite import execute_query,create_db
 from process import process_query
 from constants import *
+
+# creates the db on startup if it does not already exist
+create_db()
 
 # config stuff to expose to frontend application
 middlewares = [
