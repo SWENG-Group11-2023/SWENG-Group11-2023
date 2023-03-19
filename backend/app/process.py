@@ -4,7 +4,7 @@ import nltk
 from nltk.corpus import stopwords, wordnet
 from nltk.tokenize import word_tokenize
 from constants import *
-from sqlite import execute_query
+from sqlite import execute_query,create_db
 import numpy as np
 
 
@@ -103,6 +103,8 @@ def process_query(query):
 
 if __name__ == "__main__":
     #descriptions_to_json() #uncomment to generate JSON file containing all patient descriptions
+
+    create_db()
 
     # automatically checks if nltk modules are up to date downloads if necessary
     nltk.download('punkt')
