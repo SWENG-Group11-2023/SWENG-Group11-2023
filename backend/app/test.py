@@ -1,4 +1,4 @@
-from sqlite import execute_query
+from sqlite import execute_query,create_db
 from process import *
 from constants import *
 from nltk.corpus import wordnet
@@ -122,6 +122,7 @@ if __name__ == "__main__":
     test_best_synset_for_word()
     test_remove_stopwords()
 else:
+    create_db()
     nltk.download('punkt')
     nltk.download('stopwords')
     nltk.download('averaged_perceptron_tagger')
