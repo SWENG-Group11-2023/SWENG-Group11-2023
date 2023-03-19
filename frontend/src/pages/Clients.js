@@ -4,7 +4,7 @@ import IBM_Logo from './images/ibm_logo.png'
 function Clients() {
   return (
     
-     <div style={{textAlign: "center"}}> 
+     <div style={{textAlign: "center", padding:"60px"}}> 
      
       <h1>Clients page</h1>
       <img
