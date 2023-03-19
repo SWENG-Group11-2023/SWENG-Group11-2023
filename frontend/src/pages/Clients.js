@@ -6,11 +6,10 @@ function Clients() {
     
      <div style={{textAlign: "center", padding:"60px"}}> 
      
-      <h1>Clients page</h1>
       <img
         alt="IBM Research logo"
         src={IBM_Logo}
-        style={{height: "65px", width: "600px"}}
+        style={{height: "70px", width: "600px"}}
       />
       <p>
       <br></br>
