@@ -1,9 +1,12 @@
 import React from 'react'
+import Cards from '../components/Cards'
+import Graph from './Graphs'
 
 function Dashboard() {
   return (
     <div>
-      <h1>dashboard page</h1>
+      <Cards/>
+      <Graph/>
     </div>
   )
 }

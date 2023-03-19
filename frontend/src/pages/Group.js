@@ -1,7 +1,8 @@
 import React from 'react'
 import MemberCards from '../components/MemberCards'
 
-function Group() {
+
+const Group = () => {
   return (
     <div>
       <h1>Group page</h1>
@@ -9,6 +10,7 @@ function Group() {
       <MemberCards/>
     </div>
   )
+
 }
 
-export default Group
+export default Group;

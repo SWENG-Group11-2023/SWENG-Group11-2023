@@ -1,6 +1,8 @@
 import React from 'react';
 import axios from 'axios';
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";    
+import { FaSearch } from 'react-icons/fa';
+
 
 
 var data = ({});
@@ -29,15 +31,15 @@ function DataFetching() {
 
     return (
         <div>
-            <input
+           <FaSearch />
+            <input 
                 type="text"
                 value={id}
                 onChange={e => setId(e.target.value)}
                 
             />
-
-            <h3>Patient ID: </h3>
             {dataPionts.data ? <h2>{dataPionts.data}</h2> : null}
+            
         </div>
 
     )

@@ -7,7 +7,7 @@
   display:flex;
 }
 main{
-	background-color:rgb(172, 232, 160);
+	background-color:var(--glass);
   width: 100%;
   padding: 20px;
 }
@@ -17,11 +17,22 @@ main{
 	--mainColorLight: #78d443;
 	--secondaryColor: #42ff38;
 	--textColor: rgb(89, 228, 62);
+	--yellow: linear-gradient(180deg, #F8D49A -146.42%, #FAD79D -46.42%);
+  --orange: #fca61f;
+  --black: #242d49;
+  --gray: #788097;
+  --purple: linear-gradient(180deg, #BB67FF 0%, #C484F3 100%);
+  --pink: #FF919D;
+  --glass: rgba(255, 255, 255, 0.54);
+  --boxShadow: 0px 19px 60px rgb(0 0 0 / 8%);
+  --smboxShadow: -79px 51px 60px rgba(0, 0, 0, 0.08);
+  --activeItem: #f799a354;
 }
 
+
 .SideBar{
-  background: #295c38;
-  color: #78d443;
+  background: var(--black);
+  color: var(--purple);
   height: 100vh;
   width: 200px;
 }
@@ -57,6 +68,7 @@ main{
 .icon, link_text{
   font-size: 20px;
 }
+
 .graph_orientation{
   text-align: center;
   display: flex;
@@ -70,18 +82,20 @@ header {
 	justify-content: space-between;
 	height: 80px;
 	padding: 0 2rem;
-	background-color: var(--mainColor);
-	color: var(--textColor);
+	background-color: var(--black);
+	color: var(--glass);
 }
 
 nav a {
+	display: flex;
 	margin: 0 1rem;
-	color: var(--textColor);
+	color: var(--glass);
 	text-decoration: none;
+
 }
 
 nav a:hover {
-	color: var(--secondaryColor);
+	color:lightskyblue;
 }
 
 header .nav-btn {
@@ -90,7 +104,7 @@ header .nav-btn {
 	background: transparent;
 	border: none;
 	outline: none;
-	color: var(--textColor);
+	color: var(--glass);
 	visibility: hidden;
 	opacity: 0;
 	font-size: 1.8rem;
@@ -119,7 +133,7 @@ nav {
 		align-items: center;
 		justify-content: center;
 		gap: 1.5rem;
-		background-color: var(--mainColor);
+		background-color: var(--black);
 		transition: 1s;
 	}
 
@@ -136,4 +150,7 @@ nav {
 	nav a {
 		font-size: 1.5rem;
 	}
+	
+	
+	
 }
