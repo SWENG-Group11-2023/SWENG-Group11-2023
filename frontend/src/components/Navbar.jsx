@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 import "../App.css";
+import { DataFetching } from "../pages/DataFetching";
 
 function Navbar() {
     const navRef = useRef();
@@ -14,6 +15,7 @@ function Navbar() {
     return (
         <header>
             <h3>SWENG 2023 GROUP 11</h3>
+            <DataFetching/>
             <nav ref={navRef}>
                 <a href="/Dashboard">Dashboard</a>
                 <a href="/Clients">Our clients</a>
