@@ -3,6 +3,7 @@ import json
 import nltk
 from nltk.corpus import stopwords, wordnet
 from nltk.tokenize import word_tokenize
+from nltk import pos_tag
 from constants import *
 from sqlite import execute_query,create_db
 import numpy as np
@@ -26,6 +27,7 @@ def descriptions_list():
     with open (DESCRIPTIONS, 'r') as descriptions_json_file:
         return json.loads(descriptions_json_file.read())
     
+
 def remove_stopwords(query):
     english_stopwords = stopwords.words("english")
     query_tokens = word_tokenize(query.lower())
@@ -37,12 +39,12 @@ def remove_stopwords(query):
 
     return ' '.join(query_without_stops)
 
+
 def best_synset_for_word(word):
     synsets = wordnet.synsets(word)
     if (len(synsets) > 0):
         return synsets[0]
     return None
-
 
 
 def closest_description(query, descriptions):
@@ -81,12 +83,71 @@ def closest_description(query, descriptions):
     # return score
     return descriptions[np.nanargmax(score)]
 
+def superlative(query):
+    split_query = query.split()
+    for word in split_query:
+        if pos_tag([word])[0][1] == 'JJS':
+            for syn in wordnet.synsets(word):
+                for i in syn.lemmas():
+                    if i.name() == 'high' or i.name() == 'great':
+                        return "MAX(VALUE)"     
+                    if i.name() == 'small' or i.name() == 'low':
+                        return "MIN(VALUE)"  
+        if pos_tag([word])[0][1] == 'JJR':
+            return "compare"
+    return "*"
+
+def best_query_metric(query):
+    possible_metrics = ["list", "average", "maximum", "minimum"]
+
+    score = np.zeros(len(possible_metrics), dtype=float)
+    split_query = query.split()
+
+    query_synsets = []
+    for word in split_query:
+        synset = best_synset_for_word(word)
+        if synset is not None:
+            query_synsets.append(synset)
+
+    metric_words_synsets = []
+    for metric in possible_metrics:
+        synset = best_synset_for_word(metric)
+
+        if synset is not None:
+            metric_words_synsets.append(synset) 
+
+    for i, metric_word_synset in enumerate(metric_words_synsets):
+
+        for query_synset in query_synsets:
+            score[i] += wordnet.path_similarity(query_synset, metric_word_synset)
+    
+        if (len(query_synsets) != 0):
+            score[i] /= len(query_synsets)
+        else:
+            score[i] = 0
+        
+    best_metric_index = np.nanargmax(score)
+
+    if score[best_metric_index] >= METRIC_SIMILARITY_THRESHOLD:
+        metric_functions = {"list": "*", "average": "AVG(VALUE)", "maximum": "MAX(VALUE)", "minimum": "MIN(VALUE)"}
+        metric_function = metric_functions[possible_metrics[best_metric_index]]
+
+        return(f'{metric_function}')
+    
+    return("*")
+    
+
 def format_rows_for_graphing(rows):
     data = []
     for row in rows:
         data.append({"name": row[PATIENT_ID_COLUMN], "value": row[VALUE_COLUMN]})
 
     return data
+
+
+def format_single_value(rows):
+    return ''.join(str(rows[0]).replace(",","").replace("'",""))
+
 
 def process_query(query):
 
@@ -95,9 +156,11 @@ def process_query(query):
     query_without_stops = remove_stopwords(query)
     descriptions = descriptions_list()
     best_description = closest_description(query_without_stops, descriptions)
-    
-    rows = execute_query(f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description}"')
-    data = format_rows_for_graphing(rows)
+    query_metric = best_query_metric(query_without_stops)
+
+    rows = execute_query(f'select {query_metric} from {DB_TABLE_NAME} where DESCRIPTION="{best_description}"')
+    data = format_rows_for_graphing(rows) if query_metric == "*" else format_single_value(rows)
+
     return data
 
 
