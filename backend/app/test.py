@@ -117,11 +117,17 @@ def test_remove_stopwords():
 if __name__ == "__main__":
     create_db()
     test_execute_query()
+    print("Test Execute Query Passed")
     test_process_query()
+    print("Test Process Query Passed")
     test_format_rows_for_graphing()
+    print("Test Format Rows Passed")
     test_closest_description()
+    print("Test Closest Description Passed")
     test_best_synset_for_word()
+    print("Test Best Sysnet Passed")
     test_remove_stopwords()
+    print("Test Remove Stopwords Passed")
 else:
     create_db()
     nltk.download('punkt')
