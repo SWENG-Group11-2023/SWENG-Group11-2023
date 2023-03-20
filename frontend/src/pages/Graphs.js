@@ -13,7 +13,6 @@ function Graph() {
     <div style={{textAlign: "center"}} > 
       
     <div className="graph_orientation">
-   
    <PieChart width={350} height={350}>
    
    <Pie
