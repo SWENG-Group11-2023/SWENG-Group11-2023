@@ -85,17 +85,25 @@ def closest_description(query, descriptions):
 
 def superlative(query):
     split_query = query.split()
+    returnQuery = "*";
     for word in split_query:
         if pos_tag([word])[0][1] == 'JJS':
             for syn in wordnet.synsets(word):
                 for i in syn.lemmas():
                     if i.name() == 'high' or i.name() == 'great':
-                        return "MAX(VALUE)"     
+                        returnQuery =  "MAX(VALUE)"     
                     if i.name() == 'small' or i.name() == 'low':
-                        return "MIN(VALUE)"  
+                        returnQuery =  "MIN(VALUE)"  
         if pos_tag([word])[0][1] == 'JJR':
-            return "compare"
-    return "*"
+            for syn in wordnet.synsets(word):
+                for i in syn.lemmas():
+                    if i.name() == 'high' or i.name() == 'great':
+                        returnQuery = ">"
+                    if i.name() == 'small' or i.name() == 'low':
+                        returnQuery = "<"
+        if pos_tag([word])[0][1] == 'CD' and returnQuery != "*":
+            returnQuery += pos_tag([word])[0][0]
+    return returnQuery
 
 def best_query_metric(query):
     possible_metrics = ["list", "average", "maximum", "minimum"]
