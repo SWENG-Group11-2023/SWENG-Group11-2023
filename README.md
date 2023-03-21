@@ -26,10 +26,11 @@ TBD
 | Austeja Pakulyte      | 3rd Year    | Computer Science              |
 | Constantin Pusch      | 3rd Year    | Computer Science & Business   |
 | Kevin Morley          | 3rd Year    | Computer Science              |
-| Andrew Furey          | 2nd Year    | |
+| Andrew Furey          | 2nd Year    | Computer Science              |
 | Anthony Oisin Gavril  | 2nd Year    | Computer Science              |
-| Isobel Radford-Dodd   | 2nd Year    | |
-| Luke Barry            | 2nd Year    | |
-| Minghim Foun          | 2nd Year    | |
-| Samuel Forster        | 2nd Year    | |
+| Isobel Radford-Dodd   | 2nd Year    | Computer Science & Business   |
+| Luke Barry            | 2nd Year    | Computer Science & Business   |
+| Minghim Foun          | 2nd Year    | Computer Science              |
+| Samuel Forster        | 2nd Year    | Computer Science              |
+
 
