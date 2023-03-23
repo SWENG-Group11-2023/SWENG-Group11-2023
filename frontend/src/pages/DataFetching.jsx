@@ -45,7 +45,7 @@ function DataFetching() {
                 onChange = {handleChange}    
                onKeyDown ={handleKeyDown}   
             />
-           {dataPionts.data ? <h2>{dataPionts.data}</h2> : null}  
+           {dataPionts.data ? <h2>{data.value}</h2> : null}  
       
         </div>
 
