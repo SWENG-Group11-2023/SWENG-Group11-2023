@@ -9,37 +9,44 @@ var data = ({});
 
 
 function DataFetching() {
-    const [dataPionts, setDataPionts] = useState({})
-    const [id, setId] = useState({})
+    const [dataPionts, setDataPionts ] = useState({})
+    const [query, setQuery ] = useState('')
+    const [updatedQuery, setUpdatedQuery ] = useState('')
 
-    useEffect(() => {
+    useEffect(() => { 
             const getData = async () => {
                 // turns the user input into a form that the backend can read
-                data = backendReadableText(data);
+               // data = backendReadableText(data);
 
-                data = await axios.get(`http://127.0.0.1:8000/patient/${id}`)
+                data = await axios.get(`http://localhost/query/${updatedQuery}`)
                 setDataPionts(data)
+                console.log(data) 
             };
             getData();
-        }, [id])
+        }, [updatedQuery])
 
-        console.log("data: ", dataPionts)
-        console.log(id);
-    
-    
-
+        const handleKeyDown = (e) => {
+            if(e.key === 'Enter'){
+                console.log('do validate')
+                setUpdatedQuery(query);
+            }
+        };
+        const handleChange = (e) =>{
+            setQuery(e.target.value)
+        }
 
     return (
         <div>
            <FaSearch />
             <input 
+                placeholder='search...'
                 type="text"
-                value={id}
-                onChange={e => setId(e.target.value)}
-                
+                value={query}
+                onChange = {handleChange}    
+               onKeyDown ={handleKeyDown}   
             />
-            {dataPionts.data ? <h2>{dataPionts.data}</h2> : null}
-            
+           {dataPionts.data ? <h2>{dataPionts.data}</h2> : null}  
+      
         </div>
 
     )
@@ -50,6 +57,6 @@ function backendReadableText(userInput){
     let array = charArray.split("");
     // I can change what the replacement character is depending on what the backend team has.
     array = charArray.replaceAll(' ', "+");
-    return array;
+    return array.toString();
 }
 export { DataFetching };
