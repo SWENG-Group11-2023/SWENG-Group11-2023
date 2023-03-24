@@ -9,3 +9,6 @@ UNITS_COLUMN = 6
 TYPE_COLUMN = 7
 METRIC_SIMILARITY_THRESHOLD = 0.15
 DATA_URL = "https://synthetichealth.github.io/synthea-sample-data/downloads/synthea_sample_data_csv_apr2020.zip"
+
+DESCRIPTION_TITLE_JSON = "description"
+SYNONYMS_TITLE_JSON = "synonyms"
