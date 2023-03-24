@@ -7,20 +7,46 @@ from nltk import pos_tag
 from constants import *
 from sqlite import execute_query,create_db
 import numpy as np
+import re
 
 
-def descriptions_to_json():
-    description_tuples = execute_query(f'select distinct DESCRIPTION from {DB_TABLE_NAME}')
-    descriptions = []
+def descriptions_to_json(dev=False):
 
-    #convert list of tuples to list of strings
-    for description in description_tuples:
-        descriptions.append(''.join(description))
+    if not os.path.exists(DESCRIPTIONS) or dev:
 
-    descriptions_json_string = json.dumps(descriptions)
 
-    with open(DESCRIPTIONS, 'w') as descriptions_json_file:
-        descriptions_json_file.write(descriptions_json_string)
+        description_tuples = execute_query(f'select distinct DESCRIPTION from {DB_TABLE_NAME}')
+        descriptions = []
+
+        #convert list of tuples to list of strings
+        for description in description_tuples:
+            descriptions.append(''.join(description))
+
+        descriptions_with_syns = []
+
+        for desc in descriptions:
+            d = remove_stopwords(desc).split()
+            syns = []
+            for word in d:
+
+                # synsets = wordnet.synsets(word)
+                # for synset in synsets:
+                #     if synset is not None:
+                #         syns.append(synset.lemma_names()[0])
+
+                synset = best_synset_for_word(word)
+                if synset is not None:
+                    syns.append(synset.lemma_names()[0]) 
+
+            # syns = list(set(syns))
+
+            dict = {DESCRIPTION_TITLE_JSON: desc, SYNONYMS_TITLE_JSON: syns}
+            descriptions_with_syns.append(dict)
+
+        descriptions_json_string = json.dumps(descriptions_with_syns, indent=2)
+
+        with open(DESCRIPTIONS, 'w') as descriptions_json_file:
+            descriptions_json_file.write(descriptions_json_string)
 
 
 def descriptions_list():
@@ -34,10 +60,11 @@ def remove_stopwords(query):
     
     query_without_stops = []
     for word in query_tokens:
-        if (word not in english_stopwords and word.isalpha()):
+        if (word not in english_stopwords):
             query_without_stops.append(word)
 
-    return ' '.join(query_without_stops)
+    q = ' '.join(query_without_stops)
+    return re.sub('[^0-9a-zA-Z]+', ' ', q)
 
 
 def best_synset_for_word(word):
@@ -47,9 +74,11 @@ def best_synset_for_word(word):
     return None
 
 
+
 def closest_description(query, descriptions):
     score = np.zeros(len(descriptions), dtype=float)
     split_query = query.split()
+    
 
     query_synsets = []
     for word in split_query:
@@ -59,23 +88,13 @@ def closest_description(query, descriptions):
 
 
     for i, description in enumerate(descriptions):
-        
-        description_words = remove_stopwords(description).split()
-        description_words_synsets = []
-        for word in description_words:
-            synset = best_synset_for_word(word)
-
-            if synset is not None:
-                description_words_synsets.append(synset) 
-
-        
-        for desc_word_synset in description_words_synsets:
+        for desc_word_synset in description[SYNONYMS_TITLE_JSON]:
 
             for synset in query_synsets:
-                score[i] += wordnet.path_similarity(synset, desc_word_synset)
+                score[i] += wordnet.path_similarity(synset, best_synset_for_word(desc_word_synset))
         
-        if (len(description_words_synsets) * len(query_synsets) != 0):
-            score[i] /= len(description_words_synsets) * len(query_synsets)
+        if (len(description[SYNONYMS_TITLE_JSON]) * len(query_synsets) != 0):
+            score[i] /= len(description[SYNONYMS_TITLE_JSON]) * len(query_synsets)
         else:
             score[i] = 0
         
@@ -166,17 +185,18 @@ def process_query(query):
     best_description = closest_description(query_without_stops, descriptions)
     query_metric = best_query_metric(query_without_stops)
 
-    rows = execute_query(f'select {query_metric} from {DB_TABLE_NAME} where DESCRIPTION="{best_description}"')
+    rows = execute_query(f'select {query_metric} from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"')
     data = format_rows_for_graphing(rows) if query_metric == "*" else format_single_value(rows)
 
     return data
 
 
 if __name__ == "__main__":
-    #descriptions_to_json() #uncomment to generate JSON file containing all patient descriptions
-
     # if db does not exists creates it
     create_db()
+
+    # generates the descriptions.json file
+    descriptions_to_json()
 
     # automatically checks if nltk modules are up to date downloads if necessary
     nltk.download('punkt')
@@ -184,6 +204,7 @@ if __name__ == "__main__":
     nltk.download('averaged_perceptron_tagger')
     nltk.download('wordnet')
     nltk.download('vader_lexicon')
+
     data = process_query("give me a list of the patients' status of HIV")
     print(data)
 
