@@ -35,6 +35,8 @@ main{
   color: var(--purple);
   height: 100vh;
   width: 200px;
+  left: 0;
+  position: absolute;
 }
 .top_section{
   display: flex;
