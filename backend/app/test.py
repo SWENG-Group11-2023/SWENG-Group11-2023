@@ -3,7 +3,7 @@ from process import *
 from constants import *
 from nltk.corpus import wordnet
 
-
+descriptions = descriptions_list()
 
 def test_execute_query():
     test_result = execute_query(f'select * from {DB_TABLE_NAME} where PATIENT="1d604da9-9a81-4ba9-80c2-de3375d59b40" limit 1')
@@ -29,24 +29,54 @@ def test_execute_query():
 
 
 def test_process_query():
+    #test "list"
     test_result = process_query("give me a list of the potassium of patients")
     expected_result = format_rows_for_graphing(execute_query(f'select * from {DB_TABLE_NAME} where DESCRIPTION="Potassium"'))
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
 
+    #test "list"
     test_result = process_query("list the body height")
     expected_result = format_rows_for_graphing(execute_query(f'select * from {DB_TABLE_NAME} where DESCRIPTION="Body Height"'))
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
 
+    #test "list"
     test_result = process_query("give me a list of patients total cholesterol")
     expected_result = format_rows_for_graphing(execute_query(f'select * from {DB_TABLE_NAME} where DESCRIPTION="Total Cholesterol"'))
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
+    #test "mean"
     test_result = process_query("give me the mean of the patients' respiratory rate")
-    expected_result = "(14.018164435946463)"
+    expected_result = "14.018164435946463"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
+    #test "median"
+    test_result = process_query("give me the median of the patients' respiratory rate")
+    expected_result = "12.0"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
+
+    #test "mode"
+    test_result = process_query("give me the mode of the patients' respiratory rate")
+    expected_result = "14.0"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
+
+    #test "maximum"
     test_result = process_query("give me the maximum of the patients' respiratory rate")
-    expected_result = "(16.0)"
+    expected_result = "16.0"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
+    #test "minimum"
+    test_result = process_query("give me the minimum of the patients' respiratory rate")
+    expected_result = "12.0"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
+
+    #test "range"
+    test_result = process_query("give me the range of the patients' respiratory rate")
+    expected_result = "4.0"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
+
+    #test "standard deviation"
+    test_result = process_query("give me the standard deviation of the patients' respiratory rate")
+    expected_result = "1.1529694844094023"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
 
@@ -79,42 +109,99 @@ def test_format_rows_for_graphing():
                         'value': '82.0'}]
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
+
 def test_format_single_value():
     test_result = format_single_value([(14.018164435946463,)])
-    expected_result = "(14.018164435946463)"
+    expected_result = "14.018164435946463"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
     test_result = format_single_value([('16.0',)])
-    expected_result = "(16.0)"
+    expected_result = "16.0"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
-def test_best_query_metric():
-    test_result = best_query_metric("give maximum patients respiratory rate")
-    expected_result = "MAX(VALUE)"
+
+def test_determine_query():
+    #test no metric
+    query = "give patients respiratory rate"
+    best_description = closest_description(query, descriptions)
+    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
+    expected_result = f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
-    test_result = best_query_metric("give minimum patients respiratory rate")
-    expected_result = "MIN(VALUE)"
+    #test "list"
+    query = "give me a list of the patients' respiratory rate"
+    best_description = closest_description(query, descriptions)
+    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
+    expected_result = f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"  
+
+    #test "mean"
+    query = "give me the mean of the patients' respiratory rate"
+    best_description = closest_description(query, descriptions)
+    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
+    expected_result = f'select AVG(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
-    test_result = best_query_metric("give average patients respiratory rate")
-    expected_result = "AVG(VALUE)"
+    #test "median"
+    query = "give me the median of the patients' respiratory rate"
+    best_description = closest_description(query, descriptions)
+    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
+    expected_result = f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}" ORDER BY VALUE LIMIT 1 OFFSET (select COUNT(*) FROM {DB_TABLE_NAME} WHERE DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}" / 2)'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
-    test_result = best_query_metric("give mean patients respiratory rate")
-    expected_result = "AVG(VALUE)"
+    #test "mode"
+    query = "give me the mode of the patients' respiratory rate"
+    best_description = closest_description(query, descriptions)
+    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
+    expected_result = f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}" GROUP BY VALUE ORDER BY COUNT(VALUE) DESC LIMIT 1'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
+    #test "average"
+    query = "give the average respiratory rate"
+    best_description = closest_description(query, descriptions)
+    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
+    expected_result = f'select AVG(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
+    #test "maximum"
+    query = "give me the maximum of the patients' respiratory rate"
+    best_description = closest_description(query, descriptions)
+    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
+    expected_result = f'select MAX(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
+    #test "minimum"
+    query = "give me the minimum of the patients' respiratory rate"
+    best_description = closest_description(query, descriptions)
+    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
+    expected_result = f'select MIN(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
+    #test "range"
+    query = "give me the range of patients' respiratory rate"
+    best_description = closest_description(query, descriptions)
+    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
+    expected_result = f'select MAX(VALUE) - MIN(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
+    #test "standard deviation"
+    query = "give me the standard deviation of patients' respiratory rate"
+    best_description = closest_description(query, descriptions)
+    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
+    expected_result = f'select SQRT(AVG(VALUE*VALUE) - AVG(VALUE)*AVG(VALUE)) from "{DB_TABLE_NAME}" where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
 
 def test_closest_description():
-    test_result = closest_description("weight", descriptions_list())
+    test_result = closest_description("weight", descriptions)[DESCRIPTION_TITLE_JSON]
     expected_result = "Body Weight"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
 
-    test_result = closest_description("height", descriptions_list())
+    test_result = closest_description("height", descriptions)[DESCRIPTION_TITLE_JSON]
     expected_result = "Body Height"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
 
-    test_result = closest_description("pain severity", descriptions_list())
+    test_result = closest_description("pain severity", descriptions)[DESCRIPTION_TITLE_JSON]
     expected_result = "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
@@ -153,7 +240,7 @@ if __name__ == "__main__":
     test_process_query()
     test_format_rows_for_graphing()
     test_format_single_value()
-    test_best_query_metric()
+    test_determine_query()
     test_closest_description()
     test_best_synset_for_word()
     test_remove_stopwords()

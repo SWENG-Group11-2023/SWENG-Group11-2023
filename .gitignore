@@ -177,3 +177,5 @@ yarn-error.log*
 *.db
 *.db-journal
 .vscode/
+
+descriptions.json
