@@ -2,12 +2,9 @@ from fastapi import FastAPI
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 from sqlite import execute_query,create_db
-from process import process_query
+from process import process_query,descriptions_to_json
 from constants import *
 import nltk
-
-# creates the db on startup if it does not already exist
-create_db()
 
 # checks if nltk packages are downloaded
 nltk.download('punkt')
@@ -15,6 +12,11 @@ nltk.download('stopwords')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('wordnet')
 nltk.download('vader_lexicon')
+
+# creates the db on startup if it does not already exist
+create_db()
+# creates description.json if does not exist
+descriptions_to_json()
 
 # config stuff to expose to frontend application
 middlewares = [
