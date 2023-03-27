@@ -3,7 +3,7 @@ from process import *
 from constants import *
 from nltk.corpus import wordnet
 
-descriptions = descriptions_list()
+global descriptions
 
 def test_execute_query():
     test_result = execute_query(f'select * from {DB_TABLE_NAME} where PATIENT="1d604da9-9a81-4ba9-80c2-de3375d59b40" limit 1')
@@ -236,6 +236,9 @@ def test_remove_stopwords():
 
 if __name__ == "__main__":
     create_db()
+    descriptions_to_json()
+    descriptions = descriptions_list()
+
     test_execute_query()
     test_process_query()
     test_format_rows_for_graphing()
@@ -246,6 +249,8 @@ if __name__ == "__main__":
     test_remove_stopwords()
 else:
     create_db()
+    descriptions_to_json()
+    descriptions = descriptions_list()
     nltk.download('punkt')
     nltk.download('stopwords')
     nltk.download('averaged_perceptron_tagger')
