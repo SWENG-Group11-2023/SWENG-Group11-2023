@@ -74,7 +74,6 @@ def best_synset_for_word(word):
     return None
 
 
-
 def closest_description(query, descriptions):
     score = np.zeros(len(descriptions), dtype=float)
     split_query = query.split()
@@ -102,6 +101,7 @@ def closest_description(query, descriptions):
     # return score
     return descriptions[np.nanargmax(score)]
 
+
 def superlative(query):
     split_query = query.split()
     returnQuery = "*";
@@ -124,8 +124,9 @@ def superlative(query):
             returnQuery += pos_tag([word])[0][0]
     return returnQuery
 
-def best_query_metric(query):
-    possible_metrics = ["list", "average", "maximum", "minimum"]
+
+def determine_query(query, description):
+    possible_metrics = ["list", "mean", "median", "mode", "maximum", "minimum", "range", "standard deviation"]
 
     score = np.zeros(len(possible_metrics), dtype=float)
     split_query = query.split()
@@ -136,32 +137,50 @@ def best_query_metric(query):
         if synset is not None:
             query_synsets.append(synset)
 
-    metric_words_synsets = []
+    metric_synsets = []
     for metric in possible_metrics:
-        synset = best_synset_for_word(metric)
+        split_metric = metric.split()
+        word_synsets = []
+        for word in split_metric:
+            synset = best_synset_for_word(word)
 
-        if synset is not None:
-            metric_words_synsets.append(synset) 
+            if synset is not None:
+                word_synsets.append(synset)
 
-    for i, metric_word_synset in enumerate(metric_words_synsets):
+        metric_synsets.append(word_synsets)
+
+    for i, metric_word_synsets in enumerate(metric_synsets):
 
         for query_synset in query_synsets:
-            score[i] += wordnet.path_similarity(query_synset, metric_word_synset)
+            for metric_word_synset in metric_word_synsets:
+                score[i] += wordnet.path_similarity(query_synset, metric_word_synset)
     
-        if (len(query_synsets) != 0):
-            score[i] /= len(query_synsets)
+        if (len(metric_word_synsets) * len(query_synsets) != 0):
+            score[i] /= len(metric_word_synsets) * len(query_synsets)
         else:
             score[i] = 0
         
     best_metric_index = np.nanargmax(score)
+    best_metric = possible_metrics[best_metric_index]
+    print(f'Best statistical metric for the query: {best_metric}. Similarity score: {score[best_metric_index]}')
 
     if score[best_metric_index] >= METRIC_SIMILARITY_THRESHOLD:
-        metric_functions = {"list": "*", "average": "AVG(VALUE)", "maximum": "MAX(VALUE)", "minimum": "MIN(VALUE)"}
-        metric_function = metric_functions[possible_metrics[best_metric_index]]
+        metric_queries = {
+            "list": f'select * from {DB_TABLE_NAME} where DESCRIPTION="{description}"',
+            "mean": f'select AVG(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{description}"',
+            "median": f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{description}" ORDER BY VALUE LIMIT 1 OFFSET (select COUNT(*) FROM {DB_TABLE_NAME} WHERE DESCRIPTION="{description}" / 2)',
+            "mode": f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{description}" GROUP BY VALUE ORDER BY COUNT(VALUE) DESC LIMIT 1',
+            "maximum": f'select MAX(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{description}"',
+            "minimum": f'select MIN(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{description}"',
+            "range": f'select MAX(VALUE) - MIN(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{description}"',
+            "standard deviation": f'select SQRT(AVG(VALUE*VALUE) - AVG(VALUE)*AVG(VALUE)) from "{DB_TABLE_NAME}" where DESCRIPTION="{description}"'
+        }
 
-        return(f'{metric_function}')
+        metric_query = metric_queries[best_metric]
+
+        return(f'{metric_query}')
     
-    return("*")
+    return(f'select * from {DB_TABLE_NAME} where DESCRIPTION="{description}"')
     
 
 def format_rows_for_graphing(rows):
@@ -173,7 +192,7 @@ def format_rows_for_graphing(rows):
 
 
 def format_single_value(rows):
-    return ''.join(str(rows[0]).replace(",","").replace("'",""))
+    return ''.join(str(rows[0]).replace(",","").replace("'","").replace("(","").replace(")",""))
 
 
 def process_query(query):
@@ -183,10 +202,10 @@ def process_query(query):
     query_without_stops = remove_stopwords(query)
     descriptions = descriptions_list()
     best_description = closest_description(query_without_stops, descriptions)
-    query_metric = best_query_metric(query_without_stops)
+    query = determine_query(query_without_stops, best_description[DESCRIPTION_TITLE_JSON])
 
-    rows = execute_query(f'select {query_metric} from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"')
-    data = format_rows_for_graphing(rows) if query_metric == "*" else format_single_value(rows)
+    rows = execute_query(query)
+    data = format_rows_for_graphing(rows) if "select *" in query else format_single_value(rows)
 
     return data
 
@@ -205,7 +224,7 @@ if __name__ == "__main__":
     nltk.download('wordnet')
     nltk.download('vader_lexicon')
 
-    data = process_query("give me a list of the patients' status of HIV")
+    data = process_query("give me the standard deviation of respiratory rate")
     print(data)
 
     
