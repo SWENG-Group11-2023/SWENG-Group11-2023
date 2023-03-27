@@ -1,19 +1,21 @@
-import react, { useState, useRef , PureComponent} from 'react';
+import react, { useState, useRef , PureComponent, useEffect} from 'react';
+import { data } from './DataFetching';
 import { PieChart , Pie, BarChart, Bar,  LineChart, Line, Tooltip,CartesianGrid,XAxis,YAxis,Legend} from 'recharts';
 
 function Graph() {
-  // sample data to show off the graphs
-  const data = [ {name:"facebook", value: 20, peakUsage: 1.4},
-                 {name: "instagram", value: 15, peakUsage: 1.1},
-                 {name: "snapchat", value: 10, peakUsage: 0.8}
-                ]
-  
+  useEffect(() => { 
+    const data = () => {
+
+    };
+}, [data])
+
+
+
 
   return (
     <div style={{textAlign: "center"}} > 
-      
     <div className="graph_orientation">
-   <PieChart width={350} height={350}>
+     <PieChart width={350} height={350}>
    
    <Pie
      margin ={{
@@ -31,9 +33,10 @@ function Graph() {
      fill="#8884d8"
      label
    />
+   console.log(data)
    <Tooltip />
- </PieChart>
- <BarChart
+     </PieChart>
+     <BarChart
          width={400}
          height={300}
          data={data}
@@ -51,10 +54,9 @@ function Graph() {
          <Legend />
          <Bar dataKey="value" fill="#8884d8" />
        
-       </BarChart>
-       </div>
-
-
+     </BarChart>
+    </div>
+    
        <div>
        <div className="graph_orientation">
        <LineChart
