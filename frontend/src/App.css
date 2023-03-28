@@ -33,6 +33,8 @@ main{
 .SideBar{
   background: var(--black);
   color: var(--purple);
+  position: absolute;
+  left: 0;
   height: 100vh;
   width: 200px;
 }

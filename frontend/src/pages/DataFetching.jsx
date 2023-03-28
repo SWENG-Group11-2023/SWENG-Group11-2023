@@ -1,55 +1,54 @@
 import React from 'react';
 import axios from 'axios';
-import { useState, useEffect } from "react";    
+import { useState, useEffect } from "react";
 import { FaSearch } from 'react-icons/fa';
 
 
 
-var data = ({});
+var data = [{ "name": "0.0,14.257", "value": 200.0 }, { "name": "14.257,28.514", "value": 163.0 },
+{ "name": "28.514,42.771", "value": 168.0 }, { "name": "42.771,57.029", "value": 238.0 },
+{ "name": "57.029,71.286", "value": 261.0 }, { "name": "71.286,85.543", "value": 308.0 },
+{ "name": "85.543,99.8", "value": 277.0 }];
+
 
 
 function DataFetching() {
     const [dataPionts, setDataPionts] = useState({})
-    const [id, setId] = useState({})
+    const [query, setQuery] = useState('')
+    const [updatedQuery, setUpdatedQuery] = useState('')
 
     useEffect(() => {
-            const getData = async () => {
-                // turns the user input into a form that the backend can read
-                data = backendReadableText(data);
+        const getData = async () => {
 
-                data = await axios.get(`http://127.0.0.1:8000/patient/${id}`)
-                setDataPionts(data)
-            };
-            getData();
-        }, [id])
+            data = await axios.get(`http://localhost/query/${updatedQuery}`)
+            setDataPionts(data.data)
+            console.log(data.data)
+        };
+        getData();
+    }, [updatedQuery])
 
-        console.log("data: ", dataPionts)
-        console.log(id);
-    
-    
-
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            console.log('do validate')
+            setUpdatedQuery(query);
+        }
+    };
+    const handleChange = (e) => {
+        setQuery(e.target.value)
+    }
 
     return (
         <div>
-           <FaSearch />
-            <input 
+            <FaSearch />
+            <input
+                placeholder='search...'
                 type="text"
-                value={id}
-                onChange={e => setId(e.target.value)}
-                
+                value={query}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
             />
-            {dataPionts.data ? <h2>{dataPionts.data}</h2> : null}
-            
         </div>
 
     )
 }
-function backendReadableText(userInput){
-    let charArray = userInput;
-    charArray = String(charArray);
-    let array = charArray.split("");
-    // I can change what the replacement character is depending on what the backend team has.
-    array = charArray.replaceAll(' ', "+");
-    return array;
-}
-export { DataFetching };
+export { DataFetching, data };
