@@ -184,10 +184,20 @@ def determine_query(query, description):
     
 
 def format_rows_for_graphing(rows):
-    data = []
-    for row in rows:
-        data.append({"name": row[PATIENT_ID_COLUMN], "value": row[VALUE_COLUMN]})
+    # for row in rows:
+    #     data.append({"name": row[PATIENT_ID_COLUMN], "value": row[VALUE_COLUMN]})
+    data = [float(row[VALUE_COLUMN]) for row in rows]
+    buckets, bucket_edges = np.histogram(data, bins=7)
 
+    data = [
+        {'name':f"{round(bucket_edges[0],3)},{round(bucket_edges[1],3)}",'value':float(round(buckets[0],3))},
+        {'name':f"{round(bucket_edges[1],3)},{round(bucket_edges[2],3)}",'value':float(round(buckets[1],3))},
+        {'name':f"{round(bucket_edges[2],3)},{round(bucket_edges[3],3)}",'value':float(round(buckets[2],3))},
+        {'name':f"{round(bucket_edges[3],3)},{round(bucket_edges[4],3)}",'value':float(round(buckets[3],3))},
+        {'name':f"{round(bucket_edges[4],3)},{round(bucket_edges[5],3)}",'value':float(round(buckets[4],3))},
+        {'name':f"{round(bucket_edges[5],3)},{round(bucket_edges[6],3)}",'value':float(round(buckets[5],3))},
+        {'name':f"{round(bucket_edges[6],3)},{round(bucket_edges[7],3)}",'value':float(round(buckets[6],3))}
+    ]
     return data
 
 
