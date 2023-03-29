@@ -1,6 +1,6 @@
-import react, { useState, useRef , PureComponent, useEffect} from 'react';
+import react, { useState, useRef, PureComponent, useEffect } from 'react';
 import { data } from './DataFetching';
-import { PieChart , Pie, BarChart, Bar,  LineChart, Line, Tooltip,CartesianGrid,XAxis,YAxis,Legend} from 'recharts';
+import { PieChart, Pie, BarChart, Bar, LineChart, Line, Tooltip, CartesianGrid, XAxis, YAxis, Legend } from 'recharts';
 
 function Graph() {
   
@@ -81,32 +81,32 @@ const updateData = () => {
        
      </LineChart>
 
-     <LineChart
-     width={500}
-     height={300}
-     data={data}
-     margin={{
-       top: 5,
-       right: 30,
-       left: 20,
-       bottom: 5,
-     }}
-   >
-     <CartesianGrid strokeDasharray="3 3" />
-     <XAxis dataKey="name" />
-     <YAxis yAxisId="left" />
-     <YAxis yAxisId="right" orientation="right" />
-     <Tooltip />
-     <Legend />
-     <Line yAxisId="left" type="monotone" dataKey= "value" stroke="#8884d8" activeDot={{ r: 8 }} />
-     <Line yAxisId="right" type="monotone" dataKey="peakUsage" stroke="#82ca9d" />
-   </LineChart>
-   </div>
-       </div>
-      
- </div>
+                    <LineChart
+                        width={500}
+                        height={300}
+                        data={data}
+                        margin={{
+                            top: 5,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+                        }}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="name" />
+                        <YAxis yAxisId="left" />
+                        <YAxis yAxisId="right" orientation="right" />
+                        <Tooltip />
+                        <Legend />
+                        <Line yAxisId="left" type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
+                        <Line yAxisId="right" type="monotone" dataKey="peakUsage" stroke="#82ca9d" />
+                    </LineChart>
+                </div>
+            </div>
 
-  );
+        </div>
+
+    );
 }
 
 export default Graph;
