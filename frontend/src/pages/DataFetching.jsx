@@ -3,8 +3,6 @@ import axios from 'axios';
 import { useState, useEffect } from "react";    
 import { FaSearch } from 'react-icons/fa';
 
-
-
 var data = [{name: "isobel", value:10}, {name:"Cillian", value: 20}];
 
 

@@ -3,19 +3,22 @@ import { data } from './DataFetching';
 import { PieChart , Pie, BarChart, Bar,  LineChart, Line, Tooltip,CartesianGrid,XAxis,YAxis,Legend} from 'recharts';
 
 function Graph() {
-  useEffect(() => { 
-    const data = () => {
-
-    };
-}, [data])
+  
+const [Ndata, setData] = useState([{name: "i", value:10}, {name:"c", value: 20}]);
+const updateData = () => {
+  const newData = [
+    data
+  ];
+  setData(newData);
+};
 
 
 
 
   return (
     <div style={{textAlign: "center"}} > 
-    <div className="graph_orientation">
-     <PieChart width={350} height={350}>
+      <div className="graph_orientation">
+      <PieChart width={350} height={350}>
    
    <Pie
      margin ={{
@@ -26,14 +29,13 @@ function Graph() {
      }}
      dataKey="value"
      isAnimationActive={false}
-     data={data}
+     data={Ndata}
      cx="50%"
      cy="50%"
      outerRadius={80}
      fill="#8884d8"
      label
    />
-   console.log(data)
    <Tooltip />
      </PieChart>
      <BarChart
