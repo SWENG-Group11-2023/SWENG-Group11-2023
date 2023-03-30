@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-import { data} from './DataFetching';
+import {data} from './DataFetching';
+import { PieChart, Pie, BarChart, Bar, LineChart, Line, Tooltip, CartesianGrid, XAxis, YAxis, Legend } from 'recharts';
 
 function Chart() {
   const [Userdata, setData] = useState([
@@ -12,7 +12,7 @@ function Chart() {
 
   const updateData = () => {
     const newData = [
-      data.data[0],
+    [{"name": data.data[0].name ,"value": data.data[0].value}]
     ];
     setData(newData);
   };
@@ -20,14 +20,36 @@ function Chart() {
   return (
     <div>
       <button onClick={updateData}>Update Data</button>
-      <LineChart width={400} height={400} data={Userdata}>
+      
+      {
+       <BarChart
+       width={400}
+       height={300}
+       data={data.data}
+       margin={{
+         top: 5,
+         right: 30,
+         left: 70,
+         bottom: 5,
+       }}
+     >
+       <CartesianGrid strokeDasharray="3 3" />
+       <XAxis dataKey="name" />
+       <YAxis />
+       <Tooltip />
+       <Legend />
+       <Bar dataKey="value" fill="#8884d8" />
+     
+   </BarChart>
+    
+      /* <LineChart width={400} height={400} data={data}>
         <XAxis dataKey="name" />
         <YAxis />
         <CartesianGrid stroke="#ccc" />
         <Tooltip />
         <Legend />
         <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-      </LineChart>
+      </LineChart> */}
     </div>
   );
 }
