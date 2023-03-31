@@ -102,28 +102,6 @@ def closest_description(query, descriptions):
     return descriptions[np.nanargmax(score)]
 
 
-def superlative(query):
-    split_query = query.split()
-    returnQuery = "*";
-    for word in split_query:
-        if pos_tag([word])[0][1] == 'JJS':
-            for syn in wordnet.synsets(word):
-                for i in syn.lemmas():
-                    if i.name() == 'high' or i.name() == 'great':
-                        returnQuery =  "MAX(VALUE)"     
-                    if i.name() == 'small' or i.name() == 'low':
-                        returnQuery =  "MIN(VALUE)"  
-        if pos_tag([word])[0][1] == 'JJR':
-            for syn in wordnet.synsets(word):
-                for i in syn.lemmas():
-                    if i.name() == 'high' or i.name() == 'great':
-                        returnQuery = ">"
-                    if i.name() == 'small' or i.name() == 'low':
-                        returnQuery = "<"
-        if pos_tag([word])[0][1] == 'CD' and returnQuery != "*":
-            returnQuery += pos_tag([word])[0][0]
-    return returnQuery
-
 
 def determine_query(query, description):
     possible_metrics = ["list", "mean", "median", "mode", "maximum", "minimum", "range", "standard deviation"]
@@ -132,6 +110,16 @@ def determine_query(query, description):
     split_query = query.split()
 
     query_synsets = []
+    for pos in pos_tag(split_query):
+        if pos[1] == 'JJS':
+            synsets = wordnet.synsets(wordnet.synsets(pos[0])[0].name().split('.')[0])
+            for syn in synsets:
+                for word in syn.lemmas():
+                    if word.name() == 'high' or word.name() == 'big':
+                        query_synsets.append(wordnet.synsets('maximum')[0])
+                    if word.name() == 'low' or word.name() == 'small':
+                        query_synsets.append(wordnet.synsets('minimum')[0])
+                        
     for word in split_query:
         synset = best_synset_for_word(word)
         if synset is not None:
