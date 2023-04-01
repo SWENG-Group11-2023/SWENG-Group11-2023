@@ -12,3 +12,4 @@ DATA_URL = "https://synthetichealth.github.io/synthea-sample-data/downloads/synt
 
 DESCRIPTION_TITLE_JSON = "description"
 SYNONYMS_TITLE_JSON = "synonyms"
+COLUMNS = "DATE, PATIENT, ENCOUNTER, CODE, DESCRIPTION, VALUE, UNITS, TYPE"

@@ -166,28 +166,18 @@ def determine_query(query, description):
 
         metric_query = metric_queries[best_metric]
 
-        return(f'{metric_query}')
+        return f'{metric_query}', best_metric
     
-    return(f'select * from {DB_TABLE_NAME} where DESCRIPTION="{description}"')
+    return f'select * from {DB_TABLE_NAME} where DESCRIPTION="{description}"', best_metric
     
 
 def format_rows_for_graphing(rows):
-    # for row in rows:
-    #     data.append({"name": row[PATIENT_ID_COLUMN], "value": row[VALUE_COLUMN]})
-    data = [float(row[VALUE_COLUMN]) for row in rows]
-    buckets, bucket_edges = np.histogram(data, bins=7)
-
-    data = [
-        {'name':f"{round(bucket_edges[0],3)},{round(bucket_edges[1],3)}",'value':float(round(buckets[0],3))},
-        {'name':f"{round(bucket_edges[1],3)},{round(bucket_edges[2],3)}",'value':float(round(buckets[1],3))},
-        {'name':f"{round(bucket_edges[2],3)},{round(bucket_edges[3],3)}",'value':float(round(buckets[2],3))},
-        {'name':f"{round(bucket_edges[3],3)},{round(bucket_edges[4],3)}",'value':float(round(buckets[3],3))},
-        {'name':f"{round(bucket_edges[4],3)},{round(bucket_edges[5],3)}",'value':float(round(buckets[4],3))},
-        {'name':f"{round(bucket_edges[5],3)},{round(bucket_edges[6],3)}",'value':float(round(buckets[5],3))},
-        {'name':f"{round(bucket_edges[6],3)},{round(bucket_edges[7],3)}",'value':float(round(buckets[6],3))}
-    ]
+    data = []
+    for row in rows:
+        print(row)
+        data.append({"name": row[PATIENT_ID_COLUMN], "value": row[VALUE_COLUMN]})
+    
     return data
-
 
 def format_single_value(rows):
     return ''.join(str(rows[0]).replace(",","").replace("'","").replace("(","").replace(")",""))
@@ -200,12 +190,34 @@ def process_query(query):
     query_without_stops = remove_stopwords(query)
     descriptions = descriptions_list()
     best_description = closest_description(query_without_stops, descriptions)
-    query = determine_query(query_without_stops, best_description[DESCRIPTION_TITLE_JSON])
+    query, best_metric = determine_query(query_without_stops, best_description[DESCRIPTION_TITLE_JSON])
 
     rows = execute_query(query)
     data = format_rows_for_graphing(rows) if "select *" in query else format_single_value(rows)
-
     return data
+
+def download_to_csv(query):
+    query_without_stops = remove_stopwords(query)
+    descriptions = descriptions_list()
+    best_description = closest_description(query_without_stops, descriptions)
+    query, best_metric = determine_query(query_without_stops, best_description[DESCRIPTION_TITLE_JSON])
+
+
+    rows = execute_query(query)
+
+    if "select *" in query:
+        print(list(rows)[0])
+        stringified_rows = []
+        for row in rows:
+            s = ', '.join(list(row))
+            stringified_rows.append(s)
+
+
+        stringified_rows.insert(0, COLUMNS)
+        return stringified_rows
+    else:
+        return [best_metric.capitalize(), format_single_value(rows[0])]
+
 
 
 if __name__ == "__main__":

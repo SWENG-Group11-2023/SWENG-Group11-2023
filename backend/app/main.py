@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 from sqlite import execute_query,create_db
-from process import process_query,descriptions_to_json
+from process import process_query,descriptions_to_json, download_to_csv
 from constants import *
 import nltk
 
@@ -45,3 +45,8 @@ async def get_patient(patient_id: str = ""):
 @app.get("/query/{query}")
 async def query_with_nlp(query: str = ""):
     return process_query(query) 
+
+# use nlp to to create downloadable csv format
+@app.get("/download/{query}")
+async def query_with_nlp(query: str = ""):
+    return download_to_csv(query) 
