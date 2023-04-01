@@ -29,16 +29,10 @@ def descriptions_to_json(dev=False):
             syns = []
             for word in d:
 
-                # synsets = wordnet.synsets(word)
-                # for synset in synsets:
-                #     if synset is not None:
-                #         syns.append(synset.lemma_names()[0])
-
                 synset = best_synset_for_word(word)
                 if synset is not None:
                     syns.append(synset.lemma_names()[0]) 
 
-            # syns = list(set(syns))
 
             dict = {DESCRIPTION_TITLE_JSON: desc, SYNONYMS_TITLE_JSON: syns}
             descriptions_with_syns.append(dict)
@@ -170,15 +164,27 @@ def determine_query(query, description):
     
     return f'select * from {DB_TABLE_NAME} where DESCRIPTION="{description}"', best_metric
 
-def summarize(description, best_metric):
+def summarize(description, best_metric, units=None, type=None):
     metric = best_metric.capitalize() + " of " if best_metric.capitalize() != "List" else ""
-    return f"Summary of {metric}" + description + " data"
-
-def format_rows_for_graphing(rows):
-    data = []
-    for row in rows:
-        data.append({"name": row[PATIENT_ID_COLUMN], "value": row[VALUE_COLUMN]})
     
+    u = "" if units == None else " (" + units + ")"
+
+    if (type=="text"):
+        return f"Summary of {metric}" + description + " data (text data)"
+    else:
+        return f"Summary of {metric}" + description + " data" + u
+
+
+
+def format_rows_for_graphing(rows, summary, best_metric):
+    data = {"summary": summary, "values": [], "metrics": []}
+
+    
+    if (len(rows) != 1):
+        pass # needs to be implemented
+    else:
+        data["values"].append({"name": best_metric, "value": format_single_value(rows)})
+        
     return data
 
 def format_single_value(rows):
@@ -195,11 +201,14 @@ def process_query(query):
     query, best_metric = determine_query(query_without_stops, best_description[DESCRIPTION_TITLE_JSON])
 
 
-    summary = summarize(best_description["description"], best_metric)
-    print(summary)
     rows = execute_query(query)
-    data = format_rows_for_graphing(rows) if "select *" in query else [best_metric.capitalize(), format_single_value(rows[0])]
-    
+    print(rows[0])
+    # data = format_rows_for_graphing(rows) if "select *" in query else [best_metric.capitalize(), format_single_value(rows[0])]
+    if len(rows[0]) == 1:
+        data = format_rows_for_graphing(rows, summarize(best_description["description"], best_metric), best_metric)
+    else:
+        data = format_rows_for_graphing(rows, summarize(best_description["description"], best_metric, rows[0][UNITS_COLUMN], rows[0][TYPE_COLUMN]), best_metric)
+    print(data)
     
     return data
 
@@ -229,19 +238,22 @@ def download_to_csv(query):
 
 if __name__ == "__main__":
     # if db does not exists creates it
-    create_db()
+    # create_db()
 
-    # generates the descriptions.json file
-    descriptions_to_json()
+    # # generates the descriptions.json file
+    # descriptions_to_json()
 
-    # automatically checks if nltk modules are up to date downloads if necessary
-    nltk.download('punkt')
-    nltk.download('stopwords')
-    nltk.download('averaged_perceptron_tagger')
-    nltk.download('wordnet')
-    nltk.download('vader_lexicon')
+    # # automatically checks if nltk modules are up to date downloads if necessary
+    # nltk.download('punkt')
+    # nltk.download('stopwords')
+    # nltk.download('averaged_perceptron_tagger')
+    # nltk.download('wordnet')
+    # nltk.download('vader_lexicon')
 
-    data = process_query("give me the standard deviation of respiratory rate")
-    print(data)
+    # data = process_query("give me the standard deviation of respiratory rate")
+    # print(data)
+
+    a = np.histogram([1, 2, 3, 4], bins=2)
+    print(a)
 
     
