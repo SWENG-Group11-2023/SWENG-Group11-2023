@@ -169,12 +169,14 @@ def determine_query(query, description):
         return f'{metric_query}', best_metric
     
     return f'select * from {DB_TABLE_NAME} where DESCRIPTION="{description}"', best_metric
-    
+
+def summarize(description, best_metric):
+    metric = best_metric.capitalize() + " of " if best_metric.capitalize() != "List" else ""
+    return f"Summary of {metric}" + description + " data"
 
 def format_rows_for_graphing(rows):
     data = []
     for row in rows:
-        print(row)
         data.append({"name": row[PATIENT_ID_COLUMN], "value": row[VALUE_COLUMN]})
     
     return data
@@ -192,8 +194,13 @@ def process_query(query):
     best_description = closest_description(query_without_stops, descriptions)
     query, best_metric = determine_query(query_without_stops, best_description[DESCRIPTION_TITLE_JSON])
 
+
+    summary = summarize(best_description["description"], best_metric)
+    print(summary)
     rows = execute_query(query)
-    data = format_rows_for_graphing(rows) if "select *" in query else format_single_value(rows)
+    data = format_rows_for_graphing(rows) if "select *" in query else [best_metric.capitalize(), format_single_value(rows[0])]
+    
+    
     return data
 
 def download_to_csv(query):
