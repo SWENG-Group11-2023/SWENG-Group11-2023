@@ -196,12 +196,12 @@ def format_rows_for_graphing(rows, summary, best_metric, type):
             n = np.array(numbers)
 
             data["metrics"] =  [
-                {"average": f"{np.average(n)}"},
-                {"median": f"{np.median(n)}"},
-                {"max": f"{np.max(n)}"},
-                {"min": f"{np.min(n)}"},
-                {"range": f"{np.max(n) - np.min(n)}"},
-                {"standard deviation": f"{np.std(n)}"},
+                {"average": f"{round(np.average(n), 3)}"},
+                {"median": f"{round(np.median(n), 3)}"},
+                {"max": f"{round(np.max(n), 3)}"},
+                {"min": f"{round(np.min(n), 3)}"},
+                {"range": f"{round(np.max(n) - np.min(n), 3)}"},
+                {"standard deviation": f"{round(np.std(n), 3)}"},
             ]
 
             print(data["metrics"])
