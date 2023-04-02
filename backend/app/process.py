@@ -8,6 +8,7 @@ from constants import *
 from sqlite import execute_query,create_db
 import numpy as np
 import re
+import math
 
 
 def descriptions_to_json(dev=False):
@@ -29,16 +30,10 @@ def descriptions_to_json(dev=False):
             syns = []
             for word in d:
 
-                # synsets = wordnet.synsets(word)
-                # for synset in synsets:
-                #     if synset is not None:
-                #         syns.append(synset.lemma_names()[0])
-
                 synset = best_synset_for_word(word)
                 if synset is not None:
                     syns.append(synset.lemma_names()[0]) 
 
-            # syns = list(set(syns))
 
             dict = {DESCRIPTION_TITLE_JSON: desc, SYNONYMS_TITLE_JSON: syns}
             descriptions_with_syns.append(dict)
@@ -102,28 +97,6 @@ def closest_description(query, descriptions):
     return descriptions[np.nanargmax(score)]
 
 
-def superlative(query):
-    split_query = query.split()
-    returnQuery = "*";
-    for word in split_query:
-        if pos_tag([word])[0][1] == 'JJS':
-            for syn in wordnet.synsets(word):
-                for i in syn.lemmas():
-                    if i.name() == 'high' or i.name() == 'great':
-                        returnQuery =  "MAX(VALUE)"     
-                    if i.name() == 'small' or i.name() == 'low':
-                        returnQuery =  "MIN(VALUE)"  
-        if pos_tag([word])[0][1] == 'JJR':
-            for syn in wordnet.synsets(word):
-                for i in syn.lemmas():
-                    if i.name() == 'high' or i.name() == 'great':
-                        returnQuery = ">"
-                    if i.name() == 'small' or i.name() == 'low':
-                        returnQuery = "<"
-        if pos_tag([word])[0][1] == 'CD' and returnQuery != "*":
-            returnQuery += pos_tag([word])[0][0]
-    return returnQuery
-
 
 def determine_query(query, description):
     possible_metrics = ["list", "mean", "median", "mode", "maximum", "minimum", "range", "standard deviation"]
@@ -132,6 +105,16 @@ def determine_query(query, description):
     split_query = query.split()
 
     query_synsets = []
+    for pos in pos_tag(split_query):
+        if pos[1] == 'JJS':
+            synsets = wordnet.synsets(wordnet.synsets(pos[0])[0].name().split('.')[0])
+            for syn in synsets:
+                for word in syn.lemmas():
+                    if word.name() == 'high' or word.name() == 'big':
+                        query_synsets.append(wordnet.synsets('maximum')[0])
+                    if word.name() == 'low' or word.name() == 'small':
+                        query_synsets.append(wordnet.synsets('minimum')[0])
+                        
     for word in split_query:
         synset = best_synset_for_word(word)
         if synset is not None:
@@ -178,28 +161,70 @@ def determine_query(query, description):
 
         metric_query = metric_queries[best_metric]
 
-        return(f'{metric_query}')
+        return f'{metric_query}', best_metric
     
-    return(f'select * from {DB_TABLE_NAME} where DESCRIPTION="{description}"')
+    return f'select * from {DB_TABLE_NAME} where DESCRIPTION="{description}"', best_metric
+
+def summarize(description, best_metric, units=None, type=None):
+    metric = "the " + best_metric.capitalize() + " of " if best_metric.capitalize() != "List" else ""
     
+    u = "" if units == None else " (" + units + ")"
 
-def format_rows_for_graphing(rows):
-    # for row in rows:
-    #     data.append({"name": row[PATIENT_ID_COLUMN], "value": row[VALUE_COLUMN]})
-    data = [float(row[VALUE_COLUMN]) for row in rows]
-    buckets, bucket_edges = np.histogram(data, bins=7)
+    if (type=="text"):
+        return f"Summary of {metric}" + description + " data (text data)"
+    else:
+        return f"Summary of {metric}" + description + " data" + u
 
-    data = [
-        {'name':f"{round(bucket_edges[0],3)},{round(bucket_edges[1],3)}",'value':float(round(buckets[0],3))},
-        {'name':f"{round(bucket_edges[1],3)},{round(bucket_edges[2],3)}",'value':float(round(buckets[1],3))},
-        {'name':f"{round(bucket_edges[2],3)},{round(bucket_edges[3],3)}",'value':float(round(buckets[2],3))},
-        {'name':f"{round(bucket_edges[3],3)},{round(bucket_edges[4],3)}",'value':float(round(buckets[3],3))},
-        {'name':f"{round(bucket_edges[4],3)},{round(bucket_edges[5],3)}",'value':float(round(buckets[4],3))},
-        {'name':f"{round(bucket_edges[5],3)},{round(bucket_edges[6],3)}",'value':float(round(buckets[5],3))},
-        {'name':f"{round(bucket_edges[6],3)},{round(bucket_edges[7],3)}",'value':float(round(buckets[6],3))}
-    ]
+
+
+def format_rows_for_graphing(rows, summary, best_metric, type):
+    data = {"summary": summary, "values": [], "metrics": []}
+
+    
+    if (len(rows) != 1):
+        if (type=="numeric"):
+            numbers = []
+            for row in rows:
+                numbers.append(float(row[VALUE_COLUMN]))
+
+            bins, labels = np.histogram(numbers, bins=10)
+            for index, n in np.ndenumerate(bins):
+                i = index[0]
+                label = f"{round(labels[i], 1)},{round(labels[i+1], 1)}"
+                data["values"].append({"name": label, "value": f"{n}"})
+
+            n = np.array(numbers)
+
+            data["metrics"] =  [
+                {"average": f"{np.average(n)}"},
+                {"median": f"{np.median(n)}"},
+                {"max": f"{np.max(n)}"},
+                {"min": f"{np.min(n)}"},
+                {"range": f"{np.max(n) - np.min(n)}"},
+                {"standard deviation": f"{np.std(n)}"},
+            ]
+
+            print(data["metrics"])
+
+        elif(type == "text"):
+            frequencies = dict()
+            for row in rows:
+                if row[VALUE_COLUMN] in frequencies:
+                    frequencies[row[VALUE_COLUMN]] += 1
+                else:
+                    frequencies[row[VALUE_COLUMN]] = 1
+
+            for label, value in frequencies.items():
+                data["values"].append({"name": label, "value": f"{value}"})
+
+
+        else:
+            print("Error: Type needs to be text or numeric in format_rows_for_graphing")
+            
+    else:
+        data["values"].append({"name": best_metric, "value": format_single_value(rows)})
+    
     return data
-
 
 def format_single_value(rows):
     return ''.join(str(rows[0]).replace(",","").replace("'","").replace("(","").replace(")",""))
@@ -207,17 +232,45 @@ def format_single_value(rows):
 
 def process_query(query):
 
-    # query_with_spaces = ''.join(' ' if letter == '+' else letter for letter in query).lower()
+    query_with_spaces = ''.join(' ' if letter == '+' else letter for letter in query).lower()
     
+    query_without_stops = remove_stopwords(query_with_spaces)
+    descriptions = descriptions_list()
+    best_description = closest_description(query_without_stops, descriptions)
+    query, best_metric = determine_query(query_without_stops, best_description[DESCRIPTION_TITLE_JSON])
+
+
+    rows = execute_query(query)
+    if len(rows[0]) == 1:
+        summary = summarize(best_description["description"], best_metric)
+        data = format_rows_for_graphing(rows, summary, best_metric, "numeric")
+    else:
+        summary = summarize(best_description["description"], best_metric, rows[0][UNITS_COLUMN], rows[0][TYPE_COLUMN])
+        data = format_rows_for_graphing(rows, summary, best_metric, rows[0][TYPE_COLUMN])
+    
+    return data
+
+def download_to_csv(query):
     query_without_stops = remove_stopwords(query)
     descriptions = descriptions_list()
     best_description = closest_description(query_without_stops, descriptions)
-    query = determine_query(query_without_stops, best_description[DESCRIPTION_TITLE_JSON])
+    query, best_metric = determine_query(query_without_stops, best_description[DESCRIPTION_TITLE_JSON])
+
 
     rows = execute_query(query)
-    data = format_rows_for_graphing(rows) if "select *" in query else format_single_value(rows)
 
-    return data
+    if "select *" in query:
+        stringified_rows = []
+        for row in rows:
+            s = ', '.join(list(row))
+            stringified_rows.append(s)
+
+
+        stringified_rows.insert(0, COLUMNS)
+        return stringified_rows
+    else:
+        return [best_metric.capitalize(), format_single_value(rows[0])]
+
 
 
 if __name__ == "__main__":
@@ -236,5 +289,6 @@ if __name__ == "__main__":
 
     data = process_query("give me the standard deviation of respiratory rate")
     print(data)
+
 
     
