@@ -3,6 +3,7 @@ import {Box, Card, CardContent, Typography, CardActions, Button, Stack} from '@m
 import Graph from '../pages/Graphs';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import DownloadButton from './DownloadCSV';
 
 const Cards = () => {
   const percentage = 66;
@@ -22,8 +23,7 @@ const Cards = () => {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size='small'>Download</Button>
-          <Button size='small'>Learn more</Button>
+          <DownloadButton />
         </CardActions>
       </Card>
     </Box>
