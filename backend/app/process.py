@@ -8,6 +8,7 @@ from constants import *
 from sqlite import execute_query,create_db
 import numpy as np
 import re
+import math
 
 
 def descriptions_to_json(dev=False):
@@ -165,7 +166,7 @@ def determine_query(query, description):
     return f'select * from {DB_TABLE_NAME} where DESCRIPTION="{description}"', best_metric
 
 def summarize(description, best_metric, units=None, type=None):
-    metric = best_metric.capitalize() + " of " if best_metric.capitalize() != "List" else ""
+    metric = "the " + best_metric.capitalize() + " of " if best_metric.capitalize() != "List" else ""
     
     u = "" if units == None else " (" + units + ")"
 
@@ -176,15 +177,53 @@ def summarize(description, best_metric, units=None, type=None):
 
 
 
-def format_rows_for_graphing(rows, summary, best_metric):
+def format_rows_for_graphing(rows, summary, best_metric, type):
     data = {"summary": summary, "values": [], "metrics": []}
 
     
     if (len(rows) != 1):
-        pass # needs to be implemented
+        if (type=="numeric"):
+            numbers = []
+            for row in rows:
+                numbers.append(float(row[VALUE_COLUMN]))
+
+            bins, labels = np.histogram(numbers, bins=10)
+            for index, n in np.ndenumerate(bins):
+                i = index[0]
+                label = f"{round(labels[i], 1)},{round(labels[i+1], 1)}"
+                data["values"].append({"name": label, "value": f"{n}"})
+
+            n = np.array(numbers)
+
+            data["metrics"] =  [
+                {"average": f"{np.average(n)}"},
+                {"median": f"{np.median(n)}"},
+                {"max": f"{np.max(n)}"},
+                {"min": f"{np.min(n)}"},
+                {"range": f"{np.max(n) - np.min(n)}"},
+                {"standard deviation": f"{np.std(n)}"},
+            ]
+
+            print(data["metrics"])
+
+        elif(type == "text"):
+            frequencies = dict()
+            for row in rows:
+                if row[VALUE_COLUMN] in frequencies:
+                    frequencies[row[VALUE_COLUMN]] += 1
+                else:
+                    frequencies[row[VALUE_COLUMN]] = 1
+
+            for label, value in frequencies.items():
+                data["values"].append({"name": label, "value": f"{value}"})
+
+
+        else:
+            print("Error: Type needs to be text or numeric in format_rows_for_graphing")
+            
     else:
         data["values"].append({"name": best_metric, "value": format_single_value(rows)})
-        
+    
     return data
 
 def format_single_value(rows):
@@ -193,22 +232,21 @@ def format_single_value(rows):
 
 def process_query(query):
 
-    # query_with_spaces = ''.join(' ' if letter == '+' else letter for letter in query).lower()
+    query_with_spaces = ''.join(' ' if letter == '+' else letter for letter in query).lower()
     
-    query_without_stops = remove_stopwords(query)
+    query_without_stops = remove_stopwords(query_with_spaces)
     descriptions = descriptions_list()
     best_description = closest_description(query_without_stops, descriptions)
     query, best_metric = determine_query(query_without_stops, best_description[DESCRIPTION_TITLE_JSON])
 
 
     rows = execute_query(query)
-    print(rows[0])
-    # data = format_rows_for_graphing(rows) if "select *" in query else [best_metric.capitalize(), format_single_value(rows[0])]
     if len(rows[0]) == 1:
-        data = format_rows_for_graphing(rows, summarize(best_description["description"], best_metric), best_metric)
+        summary = summarize(best_description["description"], best_metric)
+        data = format_rows_for_graphing(rows, summary, best_metric, "numeric")
     else:
-        data = format_rows_for_graphing(rows, summarize(best_description["description"], best_metric, rows[0][UNITS_COLUMN], rows[0][TYPE_COLUMN]), best_metric)
-    print(data)
+        summary = summarize(best_description["description"], best_metric, rows[0][UNITS_COLUMN], rows[0][TYPE_COLUMN])
+        data = format_rows_for_graphing(rows, summary, best_metric, rows[0][TYPE_COLUMN])
     
     return data
 
@@ -222,7 +260,6 @@ def download_to_csv(query):
     rows = execute_query(query)
 
     if "select *" in query:
-        print(list(rows)[0])
         stringified_rows = []
         for row in rows:
             s = ', '.join(list(row))
@@ -238,22 +275,20 @@ def download_to_csv(query):
 
 if __name__ == "__main__":
     # if db does not exists creates it
-    # create_db()
+    create_db()
 
-    # # generates the descriptions.json file
-    # descriptions_to_json()
+    # generates the descriptions.json file
+    descriptions_to_json()
 
-    # # automatically checks if nltk modules are up to date downloads if necessary
-    # nltk.download('punkt')
-    # nltk.download('stopwords')
-    # nltk.download('averaged_perceptron_tagger')
-    # nltk.download('wordnet')
-    # nltk.download('vader_lexicon')
+    # automatically checks if nltk modules are up to date downloads if necessary
+    nltk.download('punkt')
+    nltk.download('stopwords')
+    nltk.download('averaged_perceptron_tagger')
+    nltk.download('wordnet')
+    nltk.download('vader_lexicon')
 
-    # data = process_query("give me the standard deviation of respiratory rate")
-    # print(data)
+    data = process_query("give me the standard deviation of respiratory rate")
+    print(data)
 
-    a = np.histogram([1, 2, 3, 4], bins=2)
-    print(a)
 
     

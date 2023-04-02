@@ -44,9 +44,9 @@ async def get_patient(patient_id: str = ""):
 # use nlp to process query
 @app.get("/query/{query}")
 async def query_with_nlp(query: str = ""):
-    return process_query(query) 
+    return process_query(query)
 
 # use nlp to to create downloadable csv format
 @app.get("/download/{query}")
-async def query_with_nlp(query: str = ""):
+async def download(query: str = ""):
     return download_to_csv(query) 
