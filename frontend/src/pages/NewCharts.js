@@ -18,10 +18,11 @@ function Chart() {
   };
 
   return (
+    //<div className="graph_orientation">
     <div>
       <button onClick={updateData}>Update Data</button>
       
-      {
+      
        <BarChart
        width={400}
        height={300}
@@ -40,16 +41,48 @@ function Chart() {
        <Legend />
        <Bar dataKey="value" fill="#8884d8" />
      
-   </BarChart>
-    
-      /* <LineChart width={400} height={400} data={data}>
-        <XAxis dataKey="name" />
-        <YAxis />
-        <CartesianGrid stroke="#ccc" />
-        <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-      </LineChart> */}
+       </BarChart>
+      
+      <PieChart width={350} height={350}>
+      <Pie
+        margin ={{
+         top: 5,
+         right: 30,
+         left: 70,
+         bottom: 50
+        }}
+        dataKey="value"
+        isAnimationActive={false}
+        data={data.data}
+        cx="50%"
+        cy="50%"
+        outerRadius={100}
+        fill="#8884d8"
+        label
+      />
+     <Tooltip />
+      </PieChart>
+
+      <LineChart
+       width={500}
+       height={300}
+       data={data.data}
+       margin={{
+         top: 5,
+         right: 30,
+         left: 50,
+         bottom: 5,
+       }}
+     >
+       <CartesianGrid strokeDasharray="3 3" />
+       <XAxis dataKey="name" />
+       <YAxis />
+       <Tooltip />
+       <Legend />
+       <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
+       
+     </LineChart>
+
     </div>
   );
 }

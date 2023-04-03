@@ -18,8 +18,8 @@ const updateData = () => {
   return (
     <div style={{textAlign: "center"}} > 
       <div className="graph_orientation">
-      <PieChart width={350} height={350}>
-   
+
+  <PieChart width={350} height={350}>
    <Pie
      margin ={{
        top: 5,
@@ -37,7 +37,7 @@ const updateData = () => {
      label
    />
    <Tooltip />
-     </PieChart>
+  </PieChart>
      <BarChart
          width={400}
          height={300}
