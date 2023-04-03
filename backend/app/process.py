@@ -191,17 +191,17 @@ def format_rows_for_graphing(rows, summary, best_metric, type):
             for index, n in np.ndenumerate(bins):
                 i = index[0]
                 label = f"{round(labels[i], 1)},{round(labels[i+1], 1)}"
-                data["values"].append({"name": label, "value": f"{n}"})
+                data["values"].append({"name": label, "value": round(float(n),3)})
 
             n = np.array(numbers)
 
             data["metrics"] =  [
-                {"average": f"{round(np.average(n), 3)}"},
-                {"median": f"{round(np.median(n), 3)}"},
-                {"max": f"{round(np.max(n), 3)}"},
-                {"min": f"{round(np.min(n), 3)}"},
-                {"range": f"{round(np.max(n) - np.min(n), 3)}"},
-                {"standard deviation": f"{round(np.std(n), 3)}"},
+                {"average": f"{round(np.average(n),3)}"},
+                {"median": f"{np.median(n)}"},
+                {"max": f"{np.max(n)}"},
+                {"min": f"{np.min(n)}"},
+                {"range": f"{np.max(n) - np.min(n)}"},
+                {"stdev": f"{round(np.std(n),3)}"},
             ]
 
             print(data["metrics"])
