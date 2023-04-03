@@ -1,5 +1,5 @@
 import React from 'react'
-import IBM_Logo from './images/IBM_logo.png'
+import IBM_Logo from './images/ibm_logo.png'
 
 function Clients() {
   return (
