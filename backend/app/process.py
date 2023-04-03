@@ -61,6 +61,13 @@ def remove_stopwords(query):
     q = ' '.join(query_without_stops)
     return re.sub('[^0-9a-zA-Z]+', ' ', q)
 
+def process_pos(query, pos):
+    split_query = query.split()
+    words_in_pos = []
+    for word in split_query:
+        if pos_tag([word])[0][1][:2] == pos:
+            words_in_pos.append(word)
+    return words_in_pos
 
 def best_synset_for_word(word):
     synsets = wordnet.synsets(word)
