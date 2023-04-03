@@ -14,18 +14,29 @@ const Cards = () => {
         { max: '100.0' },
         { min: '60.0' },
         { range: '40.0' },
-        { standarddeviation: '11.596' }
+        { stdev: '11.596' }
     ]);
+
+    const [chartSummary, setSummary] = useState(['']);
 
     const updateData = () => {
         const newData = data.data.metrics;
+        const summary = data.data.summary;
         console.log(data.data.metrics)
         setData(newData);
+        setSummary(summary)
     };
     return (
         <div>
+            <div>
+                <Typography variant='h1' color={'skyblue'} borderBottom={true}>
+                    <h2>
+                        {chartSummary}
+                    </h2>
+                </Typography>
+            </div>
             <Stack direction='row' spacing={16}>
-                <Box width='12%'>
+                <Box width='13%'>
                     <Card>
                         <CardContent>
                             <Typography gutterBottom variant='h5' component='div'>
@@ -40,7 +51,7 @@ const Cards = () => {
                     </Card>
                 </Box>
 
-                <Box width='12%' >
+                <Box width='13%' >
                     <Card>
                         <CardContent>
                             <Typography gutterBottom variant='h5' component='div'>
@@ -55,7 +66,7 @@ const Cards = () => {
                     </Card>
                 </Box>
 
-                <Box width='12%' >
+                <Box width='13%' >
                     <Card>
                         <CardContent>
                             <Typography gutterBottom variant='h5' component='div'>
@@ -70,7 +81,7 @@ const Cards = () => {
                     </Card>
                 </Box>
 
-                <Box width='12%' >
+                <Box width='13%' >
                     <Card>
                         <CardContent>
                             <Typography gutterBottom variant='h5' component='div'>
@@ -85,7 +96,7 @@ const Cards = () => {
                     </Card>
                 </Box>
 
-                <Box width='12%' >
+                <Box width='13%' >
                     <Card>
                         <CardContent>
                             <Typography gutterBottom variant='h5' component='div'>
@@ -93,7 +104,7 @@ const Cards = () => {
                             <Typography variant='body2' color='skyblue'>
                                 StDev
                                 <h1>
-                                    {Userdata[5].standarddeviation}
+                                    {Userdata[5].stdev}
                                 </h1>
                             </Typography>
                         </CardContent>
