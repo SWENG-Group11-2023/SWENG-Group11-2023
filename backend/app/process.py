@@ -106,7 +106,7 @@ def determine_query(query, description):
 
     query_synsets = []
     for pos in pos_tag(split_query):
-        if pos[1] == 'JJS':
+        if pos[1] == 'JJS' or pos[1] == 'RBS':
             synsets = wordnet.synsets(wordnet.synsets(pos[0])[0].name().split('.')[0])
             for syn in synsets:
                 for word in syn.lemmas():
