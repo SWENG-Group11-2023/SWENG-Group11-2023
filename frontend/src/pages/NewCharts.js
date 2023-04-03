@@ -18,8 +18,7 @@ function Chart() {
   };
 
   return (
-   //<div className="graph_orientation">
-   <div>
+   <div className="graph_orientation">
       
       <button onClick={updateData}>Update Data</button>
 

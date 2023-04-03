@@ -12,7 +12,7 @@ var data = [{ "name": "0.0,14.257", "value": 200.0 }, { "name": "14.257,28.514",
 //var data =  axios.get('http://localhost/query/give%20me%20a%20list%20of%20patients%20total%20cholesterol')
 
 
-
+var updatedQuerys;
 function DataFetching() {
     const [dataPionts, setDataPionts] = useState({})
     const [query, setQuery] = useState('')
@@ -21,6 +21,7 @@ function DataFetching() {
     useEffect(() => {
         const getData = async () => {
             data = await axios.get(`http://localhost/query/${updatedQuery}`)
+            updatedQuerys = updatedQuery
             setDataPionts(data.data)
             console.log(data.data)
             console.log(data.data.values)
@@ -53,4 +54,4 @@ function DataFetching() {
 
     )
 }
-export { DataFetching, data};
+export { DataFetching, updatedQuerys, data};

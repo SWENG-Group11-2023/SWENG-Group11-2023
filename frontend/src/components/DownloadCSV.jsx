@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { DataFetching } from "../pages/DataFetching";
+import { updatedQuerys } from "../pages/DataFetching";
 
 function DownloadButton() {
     const [CSVData, setCSVData] = useState({});
 
     const fetchData = async () => {
-        const data = await axios.get(`http://localhost/download/${DataFetching.updatedQuery}`)
+        const data = await axios.get(`http://localhost/download/${updatedQuerys}`)
         setCSVData(data.data);
         console.log(data.data);
     };
