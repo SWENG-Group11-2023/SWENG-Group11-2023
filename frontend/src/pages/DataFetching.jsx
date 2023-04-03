@@ -13,7 +13,7 @@ var data = [{ "name": "0.0,14.257", "value": 200.0 }, { "name": "14.257,28.514",
 //var data =  axios.get('http://localhost/query/give%20me%20a%20list%20of%20patients%20total%20cholesterol')
 
 
-
+var updatedQuerys;
 function DataFetching() {
     var [CSVData, setCSVData] = useState({});
     const [dataPionts, setDataPionts] = useState({})
@@ -23,6 +23,7 @@ function DataFetching() {
     useEffect(() => {
         const getData = async () => {
             data = await axios.get(`http://localhost/query/${updatedQuery}`)
+            updatedQuerys = updatedQuery
             setDataPionts(data.data)
             console.log(data.data)
             console.log(data.data.values)
@@ -33,7 +34,7 @@ function DataFetching() {
         getData();
     }, [updatedQuery])
 
-    
+
     const downloadCSV = () => {
         var csvContent = "data:text/csv;charset=utf-8,";
         for (let i = 0; i < CSVData.length; i++) {
@@ -53,7 +54,7 @@ function DataFetching() {
         if (e.key === 'Enter') {
             console.log('do validate')
             setUpdatedQuery(query);
-         
+
         }
     };
     const handleChange = (e) => {
@@ -69,7 +70,7 @@ function DataFetching() {
                 value={query}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
-            />          
+            />
             <div>
                 <button onClick={() => { downloadCSV(); }}> Download </button>
             </div>
