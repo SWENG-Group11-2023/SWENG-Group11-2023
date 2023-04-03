@@ -17,7 +17,7 @@ const Cards = () => {
         { stdev: '11.596' }
     ]);
 
-    const [chartSummary, setSummary] = useState(['']);
+    const [chartSummary, setSummary] = useState(['Default']);
 
     const updateData = () => {
         const newData = data.data.metrics;
