@@ -21,7 +21,7 @@ function Chart() {
     return (
         <div>
             <div>
-                <Button size='large' onClick={updateData}>Update Data</Button>
+                <Button size='large' onClick={updateData}>Update Chart</Button>
             </div>
             <div className="graph_orientation">
                 <Stack direction={'row'}>
