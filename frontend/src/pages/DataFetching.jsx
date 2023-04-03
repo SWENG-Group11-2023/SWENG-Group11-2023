@@ -2,8 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from "react";
 import { FaSearch } from 'react-icons/fa';
-import { ImFolderDownload } from 'react-icons/im'
-
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import Button from '@mui/material/Button';
 
 
 
@@ -73,7 +73,13 @@ function DataFetching() {
                 onKeyDown={handleKeyDown}
             />
             <div>
-                <button style={{ width: "50px", height: "50px", color:"light blue"}} onClick={() => { downloadCSV(); }}> <ImFolderDownload size="2em"/> </button>
+                <Button color='info' variant="contained" startIcon={<FileDownloadIcon />}
+                    onClick={() => { downloadCSV(); }} size='small'
+                    style={{
+                        backgroundColor: "#87CEEB"
+                    }}>
+                    Download CSV
+                </Button>
             </div>
         </div>
     )
