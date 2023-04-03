@@ -1,22 +1,23 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { DataFetching } from "../pages/DataFetching";
 
 function DownloadButton() {
-    const [csvData, setCsvdata] = useState([]);
-    
-    const fetchCSV = async () => {
-        try {
-            const response = await fetch('/download/this+is+the+query');
-            setCsvdata(response.data);
-            console.log("DATA RECEIVED: " + csvData);
-        } catch (error) {
-            console.error(error);
-        }
+    const [CSVData, setCSVData] = useState({});
+
+    const fetchData = async () => {
+        const data = await axios.get(`http://localhost/download/${DataFetching.updatedQuery}`)
+        setCSVData(data.data);
+        console.log(data.data);
     };
     
     const downloadCSV = () => {
-        const csvContents = "data:text/csv;charset=utf-8," + csvData.map(row => row.join(",")).join("\n");
-        const encodedURI = encodeURI(csvContents)
+        var csvContent = "data:text/csv;charset=utf-8,";
+        for (let i = 0; i < CSVData.length; i++) {
+            let row = CSVData[i].split(", ");
+            csvContent += i < CSVData.length - 1 ? row + "\n" : row;
+        }
+        const encodedURI = encodeURI(csvContent);
         const file = document.createElement("a");
         file.setAttribute("href", encodedURI);
         file.setAttribute("download", "data.csv");
@@ -27,7 +28,8 @@ function DownloadButton() {
     
     return (
         <div>
-            <button onClick={() => { fetch();downloadCSV(); }}> Download data </button>
+            <button onClick={() => { fetchData(); }}> Fetch data </button>
+            <button onClick={() => { downloadCSV(); }}> Download data </button>
         </div>
     );
 }

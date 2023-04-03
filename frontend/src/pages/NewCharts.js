@@ -4,28 +4,29 @@ import { PieChart, Pie, BarChart, Bar, LineChart, Line, Tooltip, CartesianGrid, 
 
 function Chart() {
   const [Userdata, setData] = useState([
-    { name: 'January', uv: 10 },
-    { name: 'February', uv: 20 },
-    { name: 'March', uv: 30 },
-    { name: 'April', uv: 40 },
+    { "name": "0.0,14.257", "value": 200.0 }, { "name": "14.257,28.514", "value": 163.0 },
+{ "name": "28.514,42.771", "value": 168.0 }, { "name": "42.771,57.029", "value": 238.0 },
+{ "name": "57.029,71.286", "value": 261.0 }, { "name": "71.286,85.543", "value": 308.0 },
+{ "name": "85.543,99.8", "value": 277.0 }
   ]);
 
   const updateData = () => {
-    const newData = [
-    [{"name": data.data[0].name ,"value": data.data[0].value}]
-    ];
+    const newData = 
+      data.data.values;
+    
     setData(newData);
   };
 
   return (
-    <div>
-      <button onClick={updateData}>Update Data</button>
+   //<div className="graph_orientation">
+   <div>
       
-      {
+      <button onClick={updateData}>Update Data</button>
+
        <BarChart
        width={400}
        height={300}
-       data={data.data}
+       data={Userdata}
        margin={{
          top: 5,
          right: 30,
@@ -40,16 +41,48 @@ function Chart() {
        <Legend />
        <Bar dataKey="value" fill="#8884d8" />
      
-   </BarChart>
-    
-      /* <LineChart width={400} height={400} data={data}>
-        <XAxis dataKey="name" />
-        <YAxis />
-        <CartesianGrid stroke="#ccc" />
-        <Tooltip />
-        <Legend />
-        <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-      </LineChart> */}
+       </BarChart>
+      
+      <PieChart width={350} height={350}>
+      <Pie
+        margin ={{
+         top: 5,
+         right: 30,
+         left: 70,
+         bottom: 50
+        }}
+        dataKey="value"
+        isAnimationActive={false}
+        data={Userdata}
+        cx="50%"
+        cy="50%"
+        outerRadius={100}
+        fill="#8884d8"
+        label
+      />
+      <Tooltip />
+      </PieChart>
+
+      <LineChart
+       width={500}
+       height={300}
+       data={Userdata}
+       margin={{
+         top: 5,
+         right: 30,
+         left: 50,
+         bottom: 5,
+       }}
+     >
+       <CartesianGrid strokeDasharray="3 3" />
+       <XAxis dataKey="name" />
+       <YAxis />
+       <Tooltip />
+       <Legend />
+       <Line type="monotone" dataKey="value" stroke="#8884d8" activeDot={{ r: 8 }} />
+       
+     </LineChart>
+
     </div>
   );
 }
