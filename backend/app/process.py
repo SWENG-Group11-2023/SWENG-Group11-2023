@@ -258,7 +258,10 @@ def process_query(query):
     return data
 
 def download_to_csv(query):
-    query_without_stops = remove_stopwords(query)
+    query_with_spaces = ''.join(' ' if letter == '+' else letter for letter in query).lower()
+
+
+    query_without_stops = remove_stopwords(query_with_spaces)
     descriptions = descriptions_list()
     best_description = closest_description(query_without_stops, descriptions)
     query, best_metric = determine_query(query_without_stops, best_description[DESCRIPTION_TITLE_JSON])
