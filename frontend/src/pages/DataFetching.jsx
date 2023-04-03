@@ -5,6 +5,7 @@ import { FaSearch } from 'react-icons/fa';
 
 
 
+
 var data = [{ "name": "0.0,14.257", "value": 200.0 }, { "name": "14.257,28.514", "value": 163.0 },
 { "name": "28.514,42.771", "value": 168.0 }, { "name": "42.771,57.029", "value": 238.0 },
 { "name": "57.029,71.286", "value": 261.0 }, { "name": "71.286,85.543", "value": 308.0 },
@@ -14,6 +15,7 @@ var data = [{ "name": "0.0,14.257", "value": 200.0 }, { "name": "14.257,28.514",
 
 
 function DataFetching() {
+    var [CSVData, setCSVData] = useState({});
     const [dataPionts, setDataPionts] = useState({})
     const [query, setQuery] = useState('')
     const [updatedQuery, setUpdatedQuery] = useState('')
@@ -24,9 +26,28 @@ function DataFetching() {
             setDataPionts(data.data)
             console.log(data.data)
             console.log(data.data.values)
+            CSVData = await axios.get(`http://localhost/download/${updatedQuery}`)
+            setCSVData(CSVData.data);
+            console.log(CSVData.data);
         };
         getData();
     }, [updatedQuery])
+
+    
+    const downloadCSV = () => {
+        var csvContent = "data:text/csv;charset=utf-8,";
+        for (let i = 0; i < CSVData.length; i++) {
+            let row = CSVData[i].split(", ");
+            csvContent += i < CSVData.length - 1 ? row + "\n" : row;
+        }
+        const encodedURI = encodeURI(csvContent);
+        const file = document.createElement("a");
+        file.setAttribute("href", encodedURI);
+        file.setAttribute("download", "data.csv");
+        document.body.appendChild(file);
+        file.click();
+        document.body.removeChild(file);
+    }
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
@@ -49,8 +70,10 @@ function DataFetching() {
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
             />          
+            <div>
+                <button onClick={() => { downloadCSV(); }}> Download </button>
+            </div>
         </div>
-
     )
 }
-export { DataFetching, data};
+export { DataFetching, data };
