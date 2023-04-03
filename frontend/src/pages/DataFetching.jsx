@@ -23,6 +23,7 @@ function DataFetching() {
             data = await axios.get(`http://localhost/query/${updatedQuery}`)
             setDataPionts(data.data)
             console.log(data.data)
+            console.log(data.data.values)
         };
         getData();
     }, [updatedQuery])
@@ -53,4 +54,4 @@ function DataFetching() {
 
     )
 }
-export { DataFetching, data };
+export { DataFetching, data};
