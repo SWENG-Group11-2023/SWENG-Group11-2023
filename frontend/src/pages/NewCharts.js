@@ -18,10 +18,11 @@ function Chart() {
   };
 
   return (
-    //<div className="graph_orientation">
-    <div>
-      <button onClick={updateData}>Update Data</button>
+   //<div className="graph_orientation">
+   <div>
       
+      <button onClick={updateData}>Update Data</button>
+
        <BarChart
        width={400}
        height={300}

@@ -48,8 +48,7 @@ function DataFetching() {
                 value={query}
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
-            />
-            
+            />          
         </div>
 
     )
