@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from "react";
 import { FaSearch } from 'react-icons/fa';
+import { ImFolderDownload } from 'react-icons/im'
 
 
 
@@ -72,7 +73,7 @@ function DataFetching() {
                 onKeyDown={handleKeyDown}
             />
             <div>
-                <button onClick={() => { downloadCSV(); }}> Download </button>
+                <button style={{ width: "50px", height: "50px", color:"light blue"}} onClick={() => { downloadCSV(); }}> <ImFolderDownload size="2em"/> </button>
             </div>
         </div>
     )
