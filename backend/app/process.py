@@ -144,7 +144,7 @@ def determine_query(query, description):
             score[i] = 0
         
     best_metric_index = np.nanargmax(score)
-    best_metric = possible_metrics[best_metric_index]
+    best_metric = possible_metrics[best_metric_index] if score[best_metric_index] >= METRIC_SIMILARITY_THRESHOLD else "list"
     print(f'Best statistical metric for the query: {best_metric}. Similarity score: {score[best_metric_index]}')
 
     if score[best_metric_index] >= METRIC_SIMILARITY_THRESHOLD:
@@ -196,10 +196,10 @@ def format_rows_for_graphing(rows, summary, best_metric, type):
             n = np.array(numbers)
 
             data["metrics"] =  [
-                {"average": f"{round(np.average(n),3)}"},
+                {"mean": f"{round(np.average(n),3)}"},
                 {"median": f"{np.median(n)}"},
-                {"max": f"{np.max(n)}"},
-                {"min": f"{np.min(n)}"},
+                {"maximum": f"{np.max(n)}"},
+                {"minimum": f"{np.min(n)}"},
                 {"range": f"{np.max(n) - np.min(n)}"},
                 {"stdev": f"{round(np.std(n),3)}"},
             ]
@@ -222,7 +222,17 @@ def format_rows_for_graphing(rows, summary, best_metric, type):
             print("Error: Type needs to be text or numeric in format_rows_for_graphing")
             
     else:
+        data["metrics"] =  [
+                {"mean": f"--",},
+                {"median": f"--"},
+                {"maximum": f"--"},
+                {"minimum": f"--"},
+                {"range": f"--"},
+                {'stdev': '--'}]
         data["values"].append({"name": best_metric, "value": format_single_value(rows)})
+        for dic in data['metrics']:
+            if best_metric in dic.keys():
+                dic[best_metric] = format_single_value(rows)
     
     return data
 
