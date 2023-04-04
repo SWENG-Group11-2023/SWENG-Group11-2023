@@ -9,10 +9,10 @@ import { useState } from 'react';
 
 const Cards = () => {
     const [Userdata, setData] = useState([
-        { average: '79.678' },
+        { mean: '79.678' },
         { median: '80.0' },
-        { max: '100.0' },
-        { min: '60.0' },
+        { maximum: '100.0' },
+        { minimum: '60.0' },
         { range: '40.0' },
         { stdev: '11.596' }
     ]);
@@ -44,7 +44,7 @@ const Cards = () => {
                             <Typography variant='body2' color='skyblue'>
                                 Average
                                 <h1>
-                                    {Userdata[0].average}
+                                    {Userdata[0].mean}
                                 </h1>
                             </Typography>
                         </CardContent>
@@ -59,7 +59,7 @@ const Cards = () => {
                             <Typography variant='body2' color='skyblue'>
                                 Maximum
                                 <h1>
-                                    {Userdata[2].max}
+                                    {Userdata[2].maximum}
                                 </h1>
                             </Typography>
                         </CardContent>
@@ -74,7 +74,7 @@ const Cards = () => {
                             <Typography variant='body2' color='skyblue'>
                                 Minimum
                                 <h1>
-                                    {Userdata[3].min}
+                                    {Userdata[3].minimum}
                                 </h1>
                             </Typography>
                         </CardContent>
