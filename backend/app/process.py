@@ -126,7 +126,7 @@ def get_matching_descriptions(query, descriptions):
 
     
 def determine_query(query, descriptions):
-    possible_metrics = ["list", "mean", "median", "mode", "maximum", "minimum", "range", "standard deviation"]
+    possible_metrics = ["list", "mean", "median", "maximum", "minimum", "range", "standard deviation"]
 
     score = np.zeros(len(possible_metrics), dtype=float)
     split_query = query.split()
@@ -185,7 +185,6 @@ def determine_query(query, descriptions):
         "list": f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
         "mean": f'select AVG(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
         "median": f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter} ORDER BY VALUE LIMIT 1 OFFSET (select COUNT(*) FROM {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter} / 2)',
-        "mode": f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter} GROUP BY VALUE ORDER BY COUNT(CAST(VALUE AS REAL)) DESC LIMIT 1',
         "maximum": f'select MAX(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
         "minimum": f'select MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
         "range": f'select MAX(CAST(VALUE AS REAL)) - MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
@@ -364,5 +363,5 @@ if __name__ == "__main__":
     nltk.download('wordnet')
     nltk.download('vader_lexicon')
 
-    data = process_query("give me the heart rates")
+    data = process_query("give me the maximum of weight of patients with heart rate less than 70")
     print(data)
