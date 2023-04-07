@@ -77,90 +77,62 @@ def best_synset_for_word(word):
 
 def get_matching_descriptions(query, descriptions):
     matching_descriptions = []
-
-    score = np.zeros(len(descriptions), dtype=float)
-    query_nouns = process_pos(query, 'NN')
-    
+    split_query = query.split()
     query_synsets = []
-    for word in query_nouns:
+
+    for word in split_query:
         synset = best_synset_for_word(word)
         if synset is not None:
             query_synsets.append(synset)
 
+    # determine the most similar description for the query as a whole
+    overall_query_scores = np.zeros(len(descriptions), dtype=float)
     for i, description in enumerate(descriptions):
         for desc_word_synset in description[SYNONYMS_TITLE_JSON]:
-
-            for synset in query_synsets:
-                score[i] += wordnet.path_similarity(synset, best_synset_for_word(desc_word_synset))
+            for query_synset in query_synsets:
+                overall_query_scores[i] += wordnet.path_similarity(query_synset, best_synset_for_word(desc_word_synset))
         
         if (len(description[SYNONYMS_TITLE_JSON]) * len(query_synsets) != 0):
-            score[i] /= len(description[SYNONYMS_TITLE_JSON]) * len(query_synsets)
+            overall_query_scores[i] /= len(description[SYNONYMS_TITLE_JSON]) * len(query_synsets)
         else:
-            score[i] = 0
-
-        if score[i] >= DESCRIPTION_SIMILARITY_THRESHOLD:
-            if len(matching_descriptions) < 1:
-                matching_descriptions.insert(0, descriptions[i])
-                
-
-    if len(matching_descriptions) == 0:   # if no descriptions meet the similarity threshold, return the most similar
-        return [descriptions[np.nanargmax(score)]]
-    else:
-        return matching_descriptions      # else return list of matching descriptions
-
-
-def get_second_parameter(split_query, query_synsets, description_key):
-    description = description_key["description"]
-
-    boundary_value = -1
-    for token in split_query:
-        try:
-            boundary_value = float(token)
-            break
-        except:
-            pass
+            overall_query_scores[i] = 0
     
-    greater_synset = best_synset_for_word("greater")
-    less_synset = best_synset_for_word("less")
-    never_synset = best_synset_for_word("never")
-    former_synset = best_synset_for_word("former")
-    current_synset = best_synset_for_word("current")
+    # for each word in the query, determine whether any description is a great match
+    for i, query_synset in enumerate(query_synsets):
+        best_similarity_score = 0
+        most_similar_description = None
+        for description in descriptions:
+            similarity = 0
+            for desc_word_synset in description[SYNONYMS_TITLE_JSON]:
+                similarity += wordnet.path_similarity(query_synset, best_synset_for_word(desc_word_synset))
 
-    patients = []
-    for query_synset in query_synsets:
-        if wordnet.path_similarity(query_synset, greater_synset) >= SECOND_PARAMETER_SIMILARITY_THRESHOLD:
-            patients = execute_query(f'select DISTINCT PATIENT from {DB_TABLE_NAME} where DESCRIPTION="{description}" and VALUE > {boundary_value}')
+            if len(description[SYNONYMS_TITLE_JSON]) > 0:
+                similarity /= len(description[SYNONYMS_TITLE_JSON])
+            else:
+                similarity = 0
 
-        elif wordnet.path_similarity(query_synset, less_synset) >= SECOND_PARAMETER_SIMILARITY_THRESHOLD:
-            patients = execute_query(f'select DISTINCT PATIENT from {DB_TABLE_NAME} where DESCRIPTION="{description}" and VALUE < {boundary_value}')
+            if similarity > best_similarity_score:
+                best_similarity_score = similarity
+                most_similar_description = description
         
-        elif boundary_value == -1: # Non-numeric value (smoking status)
-            if wordnet.path_similarity(query_synset, never_synset) >= SECOND_PARAMETER_SIMILARITY_THRESHOLD:
-                patients = execute_query(f'select DISTINCT PATIENT from {DB_TABLE_NAME} where DESCRIPTION="{description}" and VALUE="Never smoker"')
+        if best_similarity_score >= DESCRIPTION_SIMILARITY_THRESHOLD and len(matching_descriptions) < 2:
+            matching_descriptions.append(most_similar_description)
+            query_synsets.remove(query_synset)  # remove the matched decription from the descriptions list so no other token matches
 
-            elif wordnet.path_similarity(query_synset, former_synset) >= SECOND_PARAMETER_SIMILARITY_THRESHOLD:
-                patients = execute_query(f'select DISTINCT PATIENT from {DB_TABLE_NAME} where DESCRIPTION="{description}" and VALUE="Former smoker"')
+    if len(matching_descriptions) == 0:         # if no descriptions meet the similarity threshold, return the most similar
+        return [descriptions[np.nanargmax(overall_query_scores)]]
+    else:
+        return matching_descriptions            # else return list of matching descriptions
 
-            elif wordnet.path_similarity(query_synset, current_synset) >= SECOND_PARAMETER_SIMILARITY_THRESHOLD:
-                patients = execute_query(f'select DISTINCT PATIENT from {DB_TABLE_NAME} where DESCRIPTION="{description}" and VALUE="Current every day smoker"')
-        
-    if len(patients) == 0:
-        return ""
-
-    patients_formatted = []
-    for patient in patients:
-        patients_formatted.append(format_single_value(patient))
-
-    return f'and PATIENT in {str(patients_formatted).replace("[","(").replace("]",")")}'
     
 def determine_query(query, descriptions):
     possible_metrics = ["list", "mean", "median", "mode", "maximum", "minimum", "range", "standard deviation"]
 
     score = np.zeros(len(possible_metrics), dtype=float)
-    query_nouns = query.split()
+    split_query = query.split()
 
     query_synsets = []
-    for pos in pos_tag(query_nouns):
+    for pos in pos_tag(split_query):
         if pos[1] == 'JJS' or pos[1] == 'RBS':
             synsets = wordnet.synsets(wordnet.synsets(pos[0])[0].name().split('.')[0])
             for syn in synsets:
@@ -170,13 +142,13 @@ def determine_query(query, descriptions):
                     if word.name() == 'low' or word.name() == 'small':
                         query_synsets.append(wordnet.synsets('minimum')[0])
                         
-    for word in query_nouns:
+    for word in split_query:
         synset = best_synset_for_word(word)
         if synset is not None:
             query_synsets.append(synset)
 
     if len(descriptions) > 1:
-        second_parameter = get_second_parameter(query_nouns, query_synsets, descriptions[1])
+        second_parameter = get_second_parameter(split_query, query_synsets, descriptions[1])
     else:
         second_parameter = ""
 
@@ -193,7 +165,6 @@ def determine_query(query, descriptions):
         metric_synsets.append(word_synsets)
 
     for i, metric_word_synsets in enumerate(metric_synsets):
-
         for query_synset in query_synsets:
             for metric_word_synset in metric_word_synsets:
                 score[i] += wordnet.path_similarity(query_synset, metric_word_synset)
@@ -210,23 +181,67 @@ def determine_query(query, descriptions):
     best_description_key = descriptions[0]
     best_description = best_description_key["description"]
 
+    metric_queries = {
+        "list": f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
+        "mean": f'select AVG(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
+        "median": f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter} ORDER BY VALUE LIMIT 1 OFFSET (select COUNT(*) FROM {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter} / 2)',
+        "mode": f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter} GROUP BY VALUE ORDER BY COUNT(CAST(VALUE AS REAL)) DESC LIMIT 1',
+        "maximum": f'select MAX(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
+        "minimum": f'select MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
+        "range": f'select MAX(CAST(VALUE AS REAL)) - MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
+        "standard deviation": f'select SQRT(AVG(VALUE*VALUE) - AVG(CAST(VALUE AS REAL))*AVG(CAST(VALUE AS REAL))) from "{DB_TABLE_NAME}" where DESCRIPTION="{best_description}" {second_parameter}'
+    }
+
     if score[best_metric_index] >= METRIC_SIMILARITY_THRESHOLD:
-        metric_queries = {
-            "list": f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
-            "mean": f'select AVG(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
-            "median": f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter} ORDER BY VALUE LIMIT 1 OFFSET (select COUNT(*) FROM {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter} / 2)',
-            "mode": f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter} GROUP BY VALUE ORDER BY COUNT(VALUE) DESC LIMIT 1',
-            "maximum": f'select MAX(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
-            "minimum": f'select MIN(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
-            "range": f'select MAX(VALUE) - MIN(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
-            "standard deviation": f'select SQRT(AVG(VALUE*VALUE) - AVG(VALUE)*AVG(VALUE)) from "{DB_TABLE_NAME}" where DESCRIPTION="{best_description}" {second_parameter}'
-        }
-
         metric_query = metric_queries[best_metric]
+    else:
+        metric_query = metric_queries["list"]
 
-        return f'{metric_query}', best_metric
+    return f'{metric_query}', best_metric
+
+
+def get_second_parameter(split_query, query_synsets, description_key):
+    description = description_key[DESCRIPTION_TITLE_JSON]
+
+    boundary_value = None
+    for token in split_query:
+        try:
+            boundary_value = float(token)
+            break
+        except:
+            pass
+
+    if boundary_value is None: return ""
     
-    return f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}', best_metric
+    greater_synset = best_synset_for_word("greater")
+    less_synset = best_synset_for_word("less")
+    never_synset = best_synset_for_word("never")
+    former_synset = best_synset_for_word("former")
+    current_synset = best_synset_for_word("current")
+
+    query = ""
+    for query_synset in query_synsets:
+        if wordnet.path_similarity(query_synset, greater_synset) >= SECOND_PARAMETER_SIMILARITY_THRESHOLD:
+            query = (f'select DISTINCT PATIENT from {DB_TABLE_NAME} where DESCRIPTION="{description}" and CAST(VALUE AS REAL) > {boundary_value}')
+            break
+
+        elif wordnet.path_similarity(query_synset, less_synset) >= SECOND_PARAMETER_SIMILARITY_THRESHOLD:
+            query = (f'select DISTINCT PATIENT from {DB_TABLE_NAME} where DESCRIPTION="{description}" and CAST(VALUE AS REAL) < {boundary_value}')
+            break
+
+        # TODO: support non-numerical values
+
+    print(query)
+    patients = execute_query(query)
+
+    if len(patients) == 0:
+        return ""
+
+    patients_formatted = []
+    for patient in patients:
+        patients_formatted.append(format_single_value(patient))
+
+    return f'and PATIENT in {str(patients_formatted).replace("[","(").replace("]",")")}'
 
 
 def summarize(description, best_metric, units=None, type=None):
@@ -295,15 +310,15 @@ def format_single_value(rows):
 
 def process_query(query):
     query_with_spaces = ''.join(' ' if letter == '+' else letter for letter in query).lower()
-    
     query_without_stops = remove_stopwords(query_with_spaces)
+
     descriptions = descriptions_list()
     matching_descriptions = get_matching_descriptions(query_without_stops, descriptions)
     query, best_metric = determine_query(query_without_stops, matching_descriptions)
-
-    best_description = matching_descriptions[0]
-
     rows = execute_query(query)
+    
+    best_description = matching_descriptions[0]
+    
     if len(rows[0]) == 1:
         summary = summarize(best_description["description"], best_metric)
         data = format_rows_for_graphing(rows, summary, best_metric, "numeric")
@@ -316,14 +331,11 @@ def process_query(query):
 
 def download_to_csv(query):
     query_with_spaces = ''.join(' ' if letter == '+' else letter for letter in query).lower()
-
     query_without_stops = remove_stopwords(query_with_spaces)
+
     descriptions = descriptions_list()
     matching_descriptions = get_matching_descriptions(query_without_stops, descriptions)
-    query, best_metric = determine_query(query_without_stops, best_description[DESCRIPTION_TITLE_JSON])
-
-    best_description = matching_descriptions[0]
-
+    query, best_metric = determine_query(query_without_stops, matching_descriptions)
     rows = execute_query(query)
 
     if "select *" in query:
@@ -352,5 +364,5 @@ if __name__ == "__main__":
     nltk.download('wordnet')
     nltk.download('vader_lexicon')
 
-    data = process_query("give me the standard deviation of heart rate")
+    data = process_query("give me the heart rates")
     print(data)
