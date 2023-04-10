@@ -43,6 +43,7 @@ def descriptions_list():
     with open (DESCRIPTIONS, 'r') as descriptions_json_file:
         return json.loads(descriptions_json_file.read())
     
+
 def values_to_json(dev=False):
     if not os.path.exists(VALUES) or dev:
         value_tuples = execute_query(f'select distinct VALUE from {DB_TABLE_NAME}')
@@ -212,17 +213,17 @@ def determine_query(query, descriptions):
     best_metric = possible_metrics[best_metric_index] if score[best_metric_index] >= METRIC_SIMILARITY_THRESHOLD else "list"
     print(f'Best statistical metric for the query: {best_metric}. Similarity score: {score[best_metric_index]}')
 
-    best_description_key = descriptions[0]
-    best_description = best_description_key["description"]
+    best_description = descriptions[0]
+    best_description_title = best_description[DESCRIPTION_TITLE_JSON]
 
     metric_queries = {
-        "list": f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
-        "mean": f'select AVG(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
-        "median": f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter} ORDER BY VALUE LIMIT 1 OFFSET (select COUNT(*) FROM {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter} / 2)',
-        "maximum": f'select MAX(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
-        "minimum": f'select MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
-        "range": f'select MAX(CAST(VALUE AS REAL)) - MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description}" {second_parameter}',
-        "standard deviation": f'select SQRT(AVG(VALUE*VALUE) - AVG(CAST(VALUE AS REAL))*AVG(CAST(VALUE AS REAL))) from "{DB_TABLE_NAME}" where DESCRIPTION="{best_description}" {second_parameter}'
+        "list": f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
+        "mean": f'select AVG(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
+        "median": f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter} ORDER BY VALUE LIMIT 1 OFFSET (select COUNT(*) FROM {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter} / 2)',
+        "maximum": f'select MAX(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
+        "minimum": f'select MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
+        "range": f'select MAX(CAST(VALUE AS REAL)) - MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
+        "standard deviation": f'select SQRT(AVG(VALUE*VALUE) - AVG(CAST(VALUE AS REAL))*AVG(CAST(VALUE AS REAL))) from "{DB_TABLE_NAME}" where DESCRIPTION="{best_description_title}" {second_parameter}'
     }
 
     if score[best_metric_index] >= METRIC_SIMILARITY_THRESHOLD:
@@ -275,6 +276,27 @@ def get_second_parameter(split_query, query_synsets, description_key):
         patients_formatted.append(format_single_value(patient))
 
     return f'and PATIENT in {str(patients_formatted).replace("[","(").replace("]",")")}'
+
+
+def most_similar_value(split_query, values):
+    query_synsets = []
+    for word in split_query:
+        synset = best_synset_for_word(word)
+        if synset is not None:
+            query_synsets.append(synset)
+
+    similarity_scores = np.zeros(len(values), dtype=float)
+    for i, value in enumerate(values):
+        for val_word_synset in value[SYNONYMS_TITLE_JSON]:
+            for query_synset in query_synsets:
+                similarity_scores[i] += wordnet.path_similarity(query_synset, best_synset_for_word(val_word_synset))
+        
+        if (len(values[SYNONYMS_TITLE_JSON]) * len(query_synsets) != 0):
+            similarity_scores[i] /= len(values[SYNONYMS_TITLE_JSON]) * len(query_synsets)
+        else:
+            similarity_scores[i] = 0
+
+    return values[np.nanargmax(similarity_scores)]
 
 
 def summarize(description, best_metric, units=None, type=None):
