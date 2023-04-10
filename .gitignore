@@ -179,3 +179,4 @@ yarn-error.log*
 .vscode/
 
 descriptions.json
+values.json

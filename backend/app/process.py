@@ -26,11 +26,9 @@ def descriptions_to_json(dev=False):
             d = remove_stopwords(desc).split()
             syns = []
             for word in d:
-
                 synset = best_synset_for_word(word)
                 if synset is not None:
                     syns.append(synset.lemma_names()[0]) 
-
 
             dict = {DESCRIPTION_TITLE_JSON: desc, SYNONYMS_TITLE_JSON: syns}
             descriptions_with_syns.append(dict)
@@ -44,6 +42,42 @@ def descriptions_to_json(dev=False):
 def descriptions_list():
     with open (DESCRIPTIONS, 'r') as descriptions_json_file:
         return json.loads(descriptions_json_file.read())
+    
+def values_to_json(dev=False):
+    if not os.path.exists(VALUES) or dev:
+        value_tuples = execute_query(f'select distinct VALUE from {DB_TABLE_NAME}')
+        values = []
+
+        #convert list of tuples to list of strings
+        for value in value_tuples:
+            value_string = ''.join(value)
+            try:
+                float(value_string)
+            except:
+                values.append(value_string) # only append non-numerical values to the list
+
+        values_with_syns = []
+
+        for value in values:
+            v = remove_stopwords(value).split()
+            syns = []
+            for word in v:
+                synset = best_synset_for_word(word)
+                if synset is not None:
+                    syns.append(synset.lemma_names()[0]) 
+
+            dict = {VALUE_TITLE_JSON: value, SYNONYMS_TITLE_JSON: syns}
+            values_with_syns.append(dict)
+
+        values_json_string = json.dumps(values_with_syns, indent=2)
+
+        with open(VALUES, 'w') as values_json_file:
+            values_json_file.write(values_json_string)
+
+
+def values_list():
+    with open (VALUES, 'r') as values_json_file:
+        return json.loads(values_json_file.read())
     
 
 def remove_stopwords(query):
@@ -353,8 +387,9 @@ if __name__ == "__main__":
     # if db does not exists creates it
     create_db()
 
-    # generates the descriptions.json file
+    # generates necessary json files
     descriptions_to_json()
+    values_to_json()
 
     # automatically checks if nltk modules are up to date downloads if necessary
     nltk.download('punkt')

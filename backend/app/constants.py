@@ -2,6 +2,7 @@
 DB_PATH = './production.db'
 DATA_CSV = './csv/observations.csv'
 DESCRIPTIONS = './descriptions.json'
+VALUES = './values.json'
 DB_TABLE_NAME = 'main_table'
 PATIENT_ID_COLUMN = 1
 VALUE_COLUMN = 5
@@ -13,5 +14,6 @@ SECOND_PARAMETER_SIMILARITY_THRESHOLD = 0.3
 DATA_URL = "https://synthetichealth.github.io/synthea-sample-data/downloads/synthea_sample_data_csv_apr2020.zip"
 
 DESCRIPTION_TITLE_JSON = "description"
+VALUE_TITLE_JSON = "value"
 SYNONYMS_TITLE_JSON = "synonyms"
 COLUMNS = "DATE, PATIENT, ENCOUNTER, CODE, DESCRIPTION, VALUE, UNITS, TYPE"
