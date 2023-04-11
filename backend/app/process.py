@@ -223,7 +223,7 @@ def determine_query(query, descriptions):
     metric_queries = {
         "list": f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
         "mean": f'select AVG(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
-        "median": f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter} ORDER BY CAST(VALUE AS REAL) LIMIT 1 OFFSET (select COUNT(*) FROM {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter} / 2)',
+        "median": f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter} ORDER BY CAST(VALUE AS REAL) LIMIT 1 OFFSET (select COUNT(*) FROM {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}) / 2',
         "maximum": f'select MAX(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
         "minimum": f'select MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
         "range": f'select MAX(CAST(VALUE AS REAL)) - MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
