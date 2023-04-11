@@ -149,6 +149,8 @@ def get_matching_descriptions(query, descriptions):
             if similarity > best_similarity_score:
                 best_similarity_score = similarity
                 most_similar_description = description
+            elif similarity == best_similarity_score and description == descriptions[np.nanargmax(overall_query_scores)]:
+                most_similar_description = description
         
         if best_similarity_score >= DESCRIPTION_SIMILARITY_THRESHOLD and len(matching_descriptions) < 2:
             print(f'Found matching description "{most_similar_description[DESCRIPTION_TITLE_JSON]}" with similarity score {str(best_similarity_score)}.')
@@ -157,8 +159,7 @@ def get_matching_descriptions(query, descriptions):
         
         #print("Score: " + str(best_similarity_score) + " description: " + most_similar_description[DESCRIPTION_TITLE_JSON]) # output the similarity score of the most similar description
 
-    if len(matching_descriptions) == 0:         # if no descriptions meet the similarity threshold, return the most similar
-        print(f'Most similar description: "{most_similar_description[DESCRIPTION_TITLE_JSON]}" with similarity score {str(best_similarity_score)}.')
+    if len(matching_descriptions) == 1:         # if only one metric meets the threshold, return the overall most similar
         return [descriptions[np.nanargmax(overall_query_scores)]]
     else:
         return matching_descriptions            # else return list of matching descriptions
@@ -430,5 +431,5 @@ if __name__ == "__main__":
     nltk.download('wordnet')
     nltk.download('vader_lexicon')
 
-    data = process_query("give me the maximum of weight of patients")
+    data = process_query("What is the mean weight of patients whose housing status is homeless?")
     print(data)
