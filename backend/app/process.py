@@ -309,15 +309,17 @@ def most_similar_value(split_query, values):
     return values[np.nanargmax(similarity_scores)]
 
 
-def summarize(description, best_metric, units=None, type=None):
+def summarize(descriptions, best_metric, units=None, type=None):
     metric = "the " + best_metric.capitalize() + " of " if best_metric.capitalize() != "List" else ""
     
     u = "" if units == None else " (" + units + ")"
 
+    second_parameter = " given specified " + descriptions[1][DESCRIPTION_TITLE_JSON] + " value" if len(descriptions) > 1 else ""
+
     if (type=="text"):
-        return f"Summary of {metric}" + description + " data (text data)"
+        return f"Summary of {metric}" + descriptions[0][DESCRIPTION_TITLE_JSON] + " data" + second_parameter + " (text data)"
     else:
-        return f"Summary of {metric}" + description + " data" + u
+        return f"Summary of {metric}" + descriptions[0][DESCRIPTION_TITLE_JSON] + " data" + second_parameter + u
 
 
 def format_rows_for_graphing(rows, summary, best_metric, type):
@@ -382,13 +384,11 @@ def process_query(query):
     query, best_metric = determine_query(query_without_stops, matching_descriptions)
     rows = execute_query(query)
     
-    best_description = matching_descriptions[0]
-    
     if len(rows[0]) == 1:
-        summary = summarize(best_description["description"], best_metric)
+        summary = summarize(matching_descriptions, best_metric)
         data = format_rows_for_graphing(rows, summary, best_metric, "numeric")
     else:
-        summary = summarize(best_description["description"], best_metric, rows[0][UNITS_COLUMN], rows[0][TYPE_COLUMN])
+        summary = summarize(matching_descriptions, best_metric, rows[0][UNITS_COLUMN], rows[0][TYPE_COLUMN])
         data = format_rows_for_graphing(rows, summary, best_metric, rows[0][TYPE_COLUMN])
     
     return data
@@ -430,5 +430,5 @@ if __name__ == "__main__":
     nltk.download('wordnet')
     nltk.download('vader_lexicon')
 
-    data = process_query("give me the maximum of weight of patients with heart rate less than 70")
+    data = process_query("give me the maximum of weight of patients")
     print(data)
