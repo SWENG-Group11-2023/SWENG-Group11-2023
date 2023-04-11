@@ -5,6 +5,7 @@ from nltk.corpus import wordnet
 
 global descriptions
 
+#TODO: Update for new formatting
 def test_execute_query():
     test_result = execute_query(f'select * from {DB_TABLE_NAME} where PATIENT="1d604da9-9a81-4ba9-80c2-de3375d59b40" limit 1')
     expected_result = [('2011-07-28T15:02:18Z', '1d604da9-9a81-4ba9-80c2-de3375d59b40', 'b85c339a-6076-43ed-b9d0-9cf013dec49d', 
@@ -28,6 +29,7 @@ def test_execute_query():
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
 
+#TODO: Update for new formatting
 def test_process_query():
     #test "list"
     test_result = process_query("give me a list of the potassium of patients")
@@ -80,6 +82,27 @@ def test_process_query():
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
 
+#TODO
+def test_summarize(): 
+    assert(1)
+
+
+#TODO
+def test_most_similar_value():
+    assert(1)
+
+
+#TODO
+def test_get_second_parameter():
+    assert(1)
+
+
+#TODO
+def test_process_pos():
+    assert(1)
+
+
+#TODO: Update for new formatting
 def test_format_rows_for_graphing():
     test_result = format_rows_for_graphing([('2011-07-28T15:02:18Z', '1d604da9-9a81-4ba9-80c2-de3375d59b40', 'b85c339a-6076-43ed-b9d0-9cf013dec49d',
                                              '8302-2', 'Body Height', '181.0', 'cm', 'numeric')])
@@ -123,87 +146,101 @@ def test_format_single_value():
 def test_determine_query():
     #test no metric
     query = "give patients respiratory rate"
-    best_description = closest_description(query, descriptions)
-    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
-    expected_result = f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    matching_descriptions = get_matching_descriptions(query, descriptions)
+    test_result = determine_query(query, matching_descriptions)
+    expected_result = f'select * from {DB_TABLE_NAME} where DESCRIPTION="{matching_descriptions[0][DESCRIPTION_TITLE_JSON]}"'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
     #test "list"
     query = "give me a list of the patients' respiratory rate"
-    best_description = closest_description(query, descriptions)
-    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
-    expected_result = f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    matching_descriptions = get_matching_descriptions(query, descriptions)
+    test_result = determine_query(query, matching_descriptions)
+    expected_result = f'select * from {DB_TABLE_NAME} where DESCRIPTION="{matching_descriptions[0][DESCRIPTION_TITLE_JSON]}"'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"  
 
     #test "mean"
     query = "give me the mean of the patients' respiratory rate"
-    best_description = closest_description(query, descriptions)
-    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
-    expected_result = f'select AVG(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    matching_descriptions = get_matching_descriptions(query, descriptions)
+    test_result = determine_query(query, matching_descriptions)
+    expected_result = f'select AVG(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{matching_descriptions[0][DESCRIPTION_TITLE_JSON]}"'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
     #test "median"
     query = "give me the median of the patients' respiratory rate"
-    best_description = closest_description(query, descriptions)
-    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
-    expected_result = f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}" ORDER BY VALUE LIMIT 1 OFFSET (select COUNT(*) FROM {DB_TABLE_NAME} WHERE DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}" / 2)'
+    matching_descriptions = get_matching_descriptions(query, descriptions)
+    test_result = determine_query(query, matching_descriptions)
+    expected_result = f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{matching_descriptions[0][DESCRIPTION_TITLE_JSON]}" ORDER BY VALUE LIMIT 1 OFFSET (select COUNT(*) FROM {DB_TABLE_NAME} WHERE DESCRIPTION="{matching_descriptions[0][DESCRIPTION_TITLE_JSON]}" / 2)'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
     #test "mode"
     query = "give me the mode of the patients' respiratory rate"
-    best_description = closest_description(query, descriptions)
-    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
-    expected_result = f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}" GROUP BY VALUE ORDER BY COUNT(VALUE) DESC LIMIT 1'
+    matching_descriptions = get_matching_descriptions(query, descriptions)
+    test_result = determine_query(query, matching_descriptions)
+    expected_result = f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{matching_descriptions[0][DESCRIPTION_TITLE_JSON]}" GROUP BY VALUE ORDER BY COUNT(VALUE) DESC LIMIT 1'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
     #test "average"
     query = "give the average respiratory rate"
-    best_description = closest_description(query, descriptions)
-    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
-    expected_result = f'select AVG(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    matching_descriptions = get_matching_descriptions(query, descriptions)
+    test_result = determine_query(query, matching_descriptions)
+    expected_result = f'select AVG(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{matching_descriptions[0][DESCRIPTION_TITLE_JSON]}"'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
     #test "maximum"
     query = "give me the maximum of the patients' respiratory rate"
-    best_description = closest_description(query, descriptions)
-    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
-    expected_result = f'select MAX(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    matching_descriptions = get_matching_descriptions(query, descriptions)
+    test_result = determine_query(query, matching_descriptions)
+    expected_result = f'select MAX(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{matching_descriptions[0][DESCRIPTION_TITLE_JSON]}"'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
     #test "minimum"
     query = "give me the minimum of the patients' respiratory rate"
-    best_description = closest_description(query, descriptions)
-    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
-    expected_result = f'select MIN(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    matching_descriptions = get_matching_descriptions(query, descriptions)
+    test_result = determine_query(query, matching_descriptions)
+    expected_result = f'select MIN(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{matching_descriptions[0][DESCRIPTION_TITLE_JSON]}"'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
     #test "range"
     query = "give me the range of patients' respiratory rate"
-    best_description = closest_description(query, descriptions)
-    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
-    expected_result = f'select MAX(VALUE) - MIN(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    matching_descriptions = get_matching_descriptions(query, descriptions)
+    test_result = determine_query(query, matching_descriptions)
+    expected_result = f'select MAX(VALUE) - MIN(VALUE) from {DB_TABLE_NAME} where DESCRIPTION="{matching_descriptions[0][DESCRIPTION_TITLE_JSON]}"'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
     #test "standard deviation"
     query = "give me the standard deviation of patients' respiratory rate"
-    best_description = closest_description(query, descriptions)
-    test_result = determine_query(query, best_description[DESCRIPTION_TITLE_JSON])
-    expected_result = f'select SQRT(AVG(VALUE*VALUE) - AVG(VALUE)*AVG(VALUE)) from "{DB_TABLE_NAME}" where DESCRIPTION="{best_description[DESCRIPTION_TITLE_JSON]}"'
+    matching_descriptions = get_matching_descriptions(query, descriptions)
+    test_result = determine_query(query, matching_descriptions)
+    expected_result = f'select SQRT(AVG(VALUE*VALUE) - AVG(VALUE)*AVG(VALUE)) from "{DB_TABLE_NAME}" where DESCRIPTION="{matching_descriptions[0][DESCRIPTION_TITLE_JSON]}"'
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
 
-def test_closest_description():
-    test_result = closest_description("weight", descriptions)[DESCRIPTION_TITLE_JSON]
+def test_get_matching_descriptions():
+    test_result = get_matching_descriptions("weight", descriptions)[0][DESCRIPTION_TITLE_JSON]
     expected_result = "Body Weight"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
 
-    test_result = closest_description("height", descriptions)[DESCRIPTION_TITLE_JSON]
+    test_result = get_matching_descriptions("height", descriptions)[0][DESCRIPTION_TITLE_JSON]
     expected_result = "Body Height"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
 
-    test_result = closest_description("pain severity", descriptions)[DESCRIPTION_TITLE_JSON]
+    test_result = get_matching_descriptions("pain severity", descriptions)[0][DESCRIPTION_TITLE_JSON]
     expected_result = "Pain severity - 0-10 verbal numeric rating [Score] - Reported"
-    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
+    test_result1 = get_matching_descriptions("Give me the maximum weight of patients with heart rate less than 70.", descriptions)[0][DESCRIPTION_TITLE_JSON]
+    test_result2 = get_matching_descriptions("Give me the maximum weight of patients with heart rate less than 70.", descriptions)[1][DESCRIPTION_TITLE_JSON]
+    expected_result1 = "Body Weight"
+    expected_result2 = "Heart Rate"
+    assert test_result1 == expected_result1, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+    assert test_result2 == expected_result2, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
+
+    test_result1 = get_matching_descriptions("What is the mean blood pressure of patients whose housing status is homeless?", descriptions)[0][DESCRIPTION_TITLE_JSON]
+    test_result2 = get_matching_descriptions("What is the mean blood pressure of patients whose housing status is homeless?", descriptions)[1][DESCRIPTION_TITLE_JSON]
+    expected_result1 = "Diastolic Blood Pressure"
+    expected_result2 = "Housing status"
+    assert test_result1 == expected_result1, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+    assert test_result2 == expected_result2, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
 
 def test_best_synset_for_word():
@@ -241,10 +278,14 @@ if __name__ == "__main__":
 
     test_execute_query()
     test_process_query()
+    test_summarize()
+    test_most_similar_value()
+    test_get_second_parameter()
+    test_process_pos()
     test_format_rows_for_graphing()
     test_format_single_value()
     test_determine_query()
-    test_closest_description()
+    test_get_matching_descriptions()
     test_best_synset_for_word()
     test_remove_stopwords()
 else:
