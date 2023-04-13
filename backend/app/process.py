@@ -336,7 +336,7 @@ def format_rows_for_graphing(rows, summary, best_metric, type):
             for index, n in np.ndenumerate(bins):
                 i = index[0]
                 label = f"{round(labels[i], 1)},{round(labels[i+1], 1)}"
-                data["values"].append({"name": label, "value": f"{n}"})
+                data["values"].append({"name": label, "value": f"{int(n)}"})
 
             n = np.array(numbers)
 
@@ -360,7 +360,7 @@ def format_rows_for_graphing(rows, summary, best_metric, type):
                     frequencies[row[VALUE_COLUMN]] = 1
 
             for label, value in frequencies.items():
-                data["values"].append({"name": label, "value": f"{value}"})
+                data["values"].append({"name": label, "value": f"{int(value)}"})
 
 
         else:

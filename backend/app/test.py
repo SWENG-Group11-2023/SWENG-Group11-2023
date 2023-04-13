@@ -36,7 +36,7 @@ def test_process_query():
                              "{'name': '4.4,4.6', 'value': '454'}, {'name': '4.6,4.8', 'value': '855'}, {'name': '4.8,4.9', 'value': '440'}, " +
                              "{'name': '4.9,5.0', 'value': '870'}, {'name': '5.0,5.2', 'value': '695'}], 'metrics': [{'average': '4.461'}, {'median': '4.5'}, " +
                              "{'max': '5.2'}, {'min': '3.7'}, {'range': '1.5'}, {'standard deviation': '0.436'}]}")
-    assert test_result == expected_result, f"Got wrong result, expected is: \n{expected_result}, actual is \n\n\n\n{test_result}"   
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
 
     #test "list"
     test_result = str(process_query("list the body height"))
