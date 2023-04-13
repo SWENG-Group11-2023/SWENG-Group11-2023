@@ -159,7 +159,7 @@ def get_matching_descriptions(query, descriptions):
         
         #print("Score: " + str(best_similarity_score) + " description: " + most_similar_description[DESCRIPTION_TITLE_JSON]) # output the similarity score of the most similar description
 
-    if len(matching_descriptions) == 1:         # if only one metric meets the threshold, return the overall most similar
+    if len(matching_descriptions) <= 1:         # if only one metric meets the threshold, return the overall most similar
         return [descriptions[np.nanargmax(overall_query_scores)]]
     else:
         return matching_descriptions            # else return list of matching descriptions
@@ -222,13 +222,13 @@ def determine_query(query, descriptions):
     best_description_title = best_description[DESCRIPTION_TITLE_JSON]
 
     metric_queries = {
-        "list": f'select * from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
-        "mean": f'select AVG(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
-        "median": f'select VALUE from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter} ORDER BY CAST(VALUE AS REAL) LIMIT 1 OFFSET (select COUNT(*) FROM {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}) / 2',
-        "maximum": f'select MAX(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
-        "minimum": f'select MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
-        "range": f'select MAX(CAST(VALUE AS REAL)) - MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} where DESCRIPTION="{best_description_title}" {second_parameter}',
-        "standard deviation": f'select SQRT(AVG(VALUE*VALUE) - AVG(CAST(VALUE AS REAL))*AVG(CAST(VALUE AS REAL))) from "{DB_TABLE_NAME}" where DESCRIPTION="{best_description_title}" {second_parameter}'
+        "list": f'select * from {DB_TABLE_NAME} WHERE DESCRIPTION="{best_description_title}"{second_parameter}',
+        "mean": f'select AVG(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} WHERE DESCRIPTION="{best_description_title}"{second_parameter}',
+        "median": f'select VALUE from {DB_TABLE_NAME} WHERE DESCRIPTION="{best_description_title}"{second_parameter} ORDER BY CAST(VALUE AS REAL) LIMIT 1 OFFSET (select COUNT(*) FROM {DB_TABLE_NAME} WHERE DESCRIPTION="{best_description_title}"{second_parameter}) / 2',
+        "maximum": f'select MAX(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} WHERE DESCRIPTION="{best_description_title}"{second_parameter}',
+        "minimum": f'select MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} WHERE DESCRIPTION="{best_description_title}"{second_parameter}',
+        "range": f'select MAX(CAST(VALUE AS REAL)) - MIN(CAST(VALUE AS REAL)) from {DB_TABLE_NAME} WHERE DESCRIPTION="{best_description_title}"{second_parameter}',
+        "standard deviation": f'select SQRT(AVG(VALUE*VALUE) - AVG(CAST(VALUE AS REAL))*AVG(CAST(VALUE AS REAL))) from "{DB_TABLE_NAME}" WHERE DESCRIPTION="{best_description_title}"{second_parameter}'
     }
 
     if score[best_metric_index] >= METRIC_SIMILARITY_THRESHOLD:
@@ -257,7 +257,7 @@ def get_second_parameter(split_query, query_synsets, description):
         best_value = most_similar_value(split_query, values)
         parameter_value = best_value[VALUE_TITLE_JSON]
 
-        patient_refinement_query = (f'select DISTINCT PATIENT from {DB_TABLE_NAME} where DESCRIPTION="{description_title}" and VALUE="{parameter_value}"')
+        patient_refinement_query = (f'select DISTINCT PATIENT from {DB_TABLE_NAME} WHERE DESCRIPTION="{description_title}" and VALUE="{parameter_value}"')
 
     else: # value is numerical
         greater_synset = best_synset_for_word("greater")
@@ -265,14 +265,14 @@ def get_second_parameter(split_query, query_synsets, description):
 
         for query_synset in query_synsets:
             if wordnet.path_similarity(query_synset, greater_synset) >= SECOND_PARAMETER_SIMILARITY_THRESHOLD:
-                patient_refinement_query = (f'select DISTINCT PATIENT from {DB_TABLE_NAME} where DESCRIPTION="{description_title}" and CAST(VALUE AS REAL) > {parameter_value}')
+                patient_refinement_query = (f'select DISTINCT PATIENT from {DB_TABLE_NAME} WHERE DESCRIPTION="{description_title}" and CAST(VALUE AS REAL) > {parameter_value}')
                 break
 
             elif wordnet.path_similarity(query_synset, less_synset) >= SECOND_PARAMETER_SIMILARITY_THRESHOLD:
-                patient_refinement_query = (f'select DISTINCT PATIENT from {DB_TABLE_NAME} where DESCRIPTION="{description_title}" and CAST(VALUE AS REAL) < {parameter_value}')
+                patient_refinement_query = (f'select DISTINCT PATIENT from {DB_TABLE_NAME} WHERE DESCRIPTION="{description_title}" and CAST(VALUE AS REAL) < {parameter_value}')
                 break
             else:
-                patient_refinement_query = (f'select DISTINCT PATIENT from {DB_TABLE_NAME} where DESCRIPTION="{description_title}" and VALUE="{parameter_value}"')
+                patient_refinement_query = (f'select DISTINCT PATIENT from {DB_TABLE_NAME} WHERE DESCRIPTION="{description_title}" and VALUE="{parameter_value}"')
 
     print(f'Second parameter description: {description_title}. Second parameter value: {str(parameter_value)}.')
 
@@ -286,7 +286,7 @@ def get_second_parameter(split_query, query_synsets, description):
     for patient in patients:
         patients_formatted.append(format_single_value(patient))
 
-    return f'and PATIENT in {str(patients_formatted).replace("[","(").replace("]",")")}'
+    return f' and PATIENT in {str(patients_formatted).replace("[","(").replace("]",")")}'
 
 
 def most_similar_value(split_query, values):
@@ -336,15 +336,15 @@ def format_rows_for_graphing(rows, summary, best_metric, type):
             for index, n in np.ndenumerate(bins):
                 i = index[0]
                 label = f"{round(labels[i], 1)},{round(labels[i+1], 1)}"
-                data["values"].append({"name": label, "value": round(float(n),3)})
+                data["values"].append({"name": label, "value": f"{int(n)}"})
 
             n = np.array(numbers)
 
             data["metrics"] =  [
                 {"mean": f"{round(np.average(n),3)}"},
                 {"median": f"{np.median(n)}"},
-                {"maximum": f"{np.max(n)}"},
-                {"minimum": f"{np.min(n)}"},
+                {"max": f"{np.max(n)}"},
+                {"min": f"{np.min(n)}"},
                 {"range": f"{np.max(n) - np.min(n)}"},
                 {"stdev": f"{round(np.std(n),3)}"},
             ]
@@ -360,7 +360,7 @@ def format_rows_for_graphing(rows, summary, best_metric, type):
                     frequencies[row[VALUE_COLUMN]] = 1
 
             for label, value in frequencies.items():
-                data["values"].append({"name": label, "value": f"{value}"})
+                data["values"].append({"name": label, "value": f"{int(value)}"})
 
 
         else:
