@@ -2,6 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { useState, useEffect } from "react";
 import { FaSearch } from 'react-icons/fa';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import Button from '@mui/material/Button';
 
 
 
@@ -12,8 +14,9 @@ var data = [{ "name": "0.0,14.257", "value": 200.0 }, { "name": "14.257,28.514",
 //var data =  axios.get('http://localhost/query/give%20me%20a%20list%20of%20patients%20total%20cholesterol')
 
 
-
+var updatedQuerys;
 function DataFetching() {
+    var [CSVData, setCSVData] = useState({});
     const [dataPionts, setDataPionts] = useState({})
     const [query, setQuery] = useState('')
     const [updatedQuery, setUpdatedQuery] = useState('')
@@ -21,17 +24,38 @@ function DataFetching() {
     useEffect(() => {
         const getData = async () => {
             data = await axios.get(`http://localhost/query/${updatedQuery}`)
+            updatedQuerys = updatedQuery
             setDataPionts(data.data)
             console.log(data.data)
+            console.log(data.data.values)
+            CSVData = await axios.get(`http://localhost/download/${updatedQuery}`)
+            setCSVData(CSVData.data);
+            console.log(CSVData.data);
         };
         getData();
     }, [updatedQuery])
+
+
+    const downloadCSV = () => {
+        var csvContent = "data:text/csv;charset=utf-8,";
+        for (let i = 0; i < CSVData.length; i++) {
+            let row = CSVData[i].split(", ");
+            csvContent += i < CSVData.length - 1 ? row + "\n" : row;
+        }
+        const encodedURI = encodeURI(csvContent);
+        const file = document.createElement("a");
+        file.setAttribute("href", encodedURI);
+        file.setAttribute("download", "data.csv");
+        document.body.appendChild(file);
+        file.click();
+        document.body.removeChild(file);
+    }
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             console.log('do validate')
             setUpdatedQuery(query);
-         
+
         }
     };
     const handleChange = (e) => {
@@ -48,9 +72,16 @@ function DataFetching() {
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
             />
-            
+            <div>
+                <Button color='info' variant="contained" startIcon={<FileDownloadIcon />}
+                    onClick={() => { downloadCSV(); }} size='small'
+                    style={{
+                        backgroundColor: "#87CEEB"
+                    }}>
+                    Download CSV
+                </Button>
+            </div>
         </div>
-
     )
 }
 export { DataFetching, data };

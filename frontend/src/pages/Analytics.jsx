@@ -1,12 +1,11 @@
 import React from 'react'
 import {DataFetching} from './DataFetching';
-import Graph from './Graphs';
+import Chart from './NewCharts'
 
 const Analytics = () => {
   return (
     <>
-    <DataFetching/>
-    <Graph/>
+    <Chart/>
     </>
   )
 }
