@@ -343,8 +343,8 @@ def format_rows_for_graphing(rows, summary, best_metric, type):
             data["metrics"] =  [
                 {"mean": f"{round(np.average(n),3)}"},
                 {"median": f"{np.median(n)}"},
-                {"maximum": f"{np.max(n)}"},
-                {"minimum": f"{np.min(n)}"},
+                {"max": f"{np.max(n)}"},
+                {"min": f"{np.min(n)}"},
                 {"range": f"{np.max(n) - np.min(n)}"},
                 {"stdev": f"{round(np.std(n),3)}"},
             ]
