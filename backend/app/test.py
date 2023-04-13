@@ -313,6 +313,7 @@ def test_remove_stopwords():
 if __name__ == "__main__":
     create_db()
     descriptions_to_json()
+    values_to_json()
     descriptions = descriptions_list()
 
     test_execute_query()
@@ -329,6 +330,8 @@ if __name__ == "__main__":
     print("\nAll tests passed successfully.")
 else:
     create_db()
+    descriptions_to_json()
+    values_to_json()
     nltk.download('punkt')
     nltk.download('stopwords')
     nltk.download('averaged_perceptron_tagger')
