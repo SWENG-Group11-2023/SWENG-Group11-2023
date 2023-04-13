@@ -87,24 +87,60 @@ def test_process_query():
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
 
-#TODO
 def test_summarize(): 
-    assert(1)
+    test_result = summarize([descriptions[1]], "mean", "/min", "numeric")
+    expected_result = "Summary of the Mean of Pain severity - 0-10 verbal numeric rating [Score] - Reported data (/min)"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
+
+    test_result = summarize([descriptions[4]], "maximum", "/min", "numeric")
+    expected_result = "Summary of the Maximum of Diastolic Blood Pressure data (/min)"
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
 
-#TODO
 def test_most_similar_value():
-    assert(1)
+    values = values_list()
+    test_result = most_similar_value("cardiac death", values)
+    expected_result = values[46]
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
 
-#TODO
 def test_get_second_parameter():
-    assert(1)
+    split_query = ["mean", "weight", "patients", "housing", "status", "homeless"]
+    synsets = []
+
+    for word in split_query:
+        synset = best_synset_for_word(word)
+        if synset is not None:
+            synsets.append(synset)
+    
+    description = descriptions[114]
+    
+    test_result = get_second_parameter(split_query, synsets, description)
+    expected_result = format(" and PATIENT in ('e19ef77e-c29c-4fe6-9790-23d53ef5158f', 'c0346f60-1c3c-46b1-b448-368b5fee8761', 'e15ce616-8e58-4d4c-a6eb-712ce571aeef', " + 
+                             "'3e89db15-7c8d-464c-8ed6-e1535438ca83', '6e239b88-5153-4098-85ab-27bd7539cd0e', '03963166-b49f-4440-a80d-30abb90b4a78', " +
+                             "'c9942738-49f3-4459-818f-8da20072ff76', 'dfeb8bee-d1d7-4d41-a1de-2a42795d28a9', 'e8ae3951-69d1-4257-a22b-ed03327260d7', " +
+                             "'e4199934-4ef7-45a4-9583-8f764af997f2', 'cb1be644-93a5-4208-8776-f5feece6967a', '8b18172e-bdf3-4998-aa8b-0db6887cdf53', " +
+                             "'076688b0-f0d5-4c45-8bc6-b206684fa9ac', '9d69e626-c968-4991-a486-79f4eab4db38', 'c94479f7-e87d-40d4-be81-fd5ab44a68c3', " +
+                             "'1030d86d-86f5-4195-962a-48895ca085ab', 'b37c9b35-6fea-4570-b7f6-379baf4c9399', 'a5fa511c-6acf-4994-a809-c9ce6e7c7ad9')")
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
 
-#TODO
-def test_process_pos():
-    assert(1)
+    split_query = ["median", "height", "patients", "weight", "less", "than", "3"]
+    synsets = []
+
+    for word in split_query:
+        synset = best_synset_for_word(word)
+        if synset is not None:
+            synsets.append(synset)
+    
+    description = descriptions[2]
+    
+    test_result = get_second_parameter(split_query, synsets, description)
+    expected_result = format(" and PATIENT in ('6d4312d1-0663-474b-bd30-b0e00dd7dbc7', '4b92e3f1-b92b-48ec-9baa-2905409d1743', '80bf0f47-724a-4254-b3ec-d54c15ad83b9', " +
+                             "'e112cedd-a98e-489e-abb0-875420d40397', '2fa0c2b3-48c0-4fd4-b9f3-d6bfe033b175', 'd9b90b1e-e22f-48e0-85e5-ca8a71ad06f7', " +
+                             "'3f2d22c9-5faf-4e71-8d83-f47071bae997', '76811a9f-dd57-4949-9377-5c164d58665d', '2146b1c2-74e9-4217-8869-b8121bead8cc', " +
+                             "'ffcfa457-00c2-4405-9837-ac2781549c7e', '4bbde047-119f-4a12-9b68-2a89b274364e')")
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
 
 def test_format_rows_for_graphing():
@@ -284,7 +320,6 @@ if __name__ == "__main__":
     test_summarize()
     test_most_similar_value()
     test_get_second_parameter()
-    test_process_pos()
     test_format_rows_for_graphing()
     test_format_single_value()
     test_determine_query()
