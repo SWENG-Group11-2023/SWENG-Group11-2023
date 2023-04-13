@@ -34,17 +34,17 @@ def test_process_query():
     expected_result = format("{'summary': 'Summary of Potassium data (mmol/L)', 'values': [{'name': '3.7,3.8', 'value': '599'}, {'name': '3.8,4.0', 'value': '449'}, " +
                              "{'name': '4.0,4.2', 'value': '865'}, {'name': '4.2,4.3', 'value': '420'}, {'name': '4.3,4.4', 'value': '868'}, " +
                              "{'name': '4.4,4.6', 'value': '454'}, {'name': '4.6,4.8', 'value': '855'}, {'name': '4.8,4.9', 'value': '440'}, " +
-                             "{'name': '4.9,5.0', 'value': '870'}, {'name': '5.0,5.2', 'value': '695'}], 'metrics': [{'average': '4.461'}, {'median': '4.5'}, " +
-                             "{'max': '5.2'}, {'min': '3.7'}, {'range': '1.5'}, {'standard deviation': '0.436'}]}")
-    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
+                             "{'name': '4.9,5.0', 'value': '870'}, {'name': '5.0,5.2', 'value': '695'}], 'metrics': [{'mean': '4.461'}, {'median': '4.5'}, " +
+                             "{'max': '5.2'}, {'min': '3.7'}, {'range': '1.5'}, {'stdev': '0.436'}]}")
+    assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is \n\n{test_result}"   
 
     #test "list"
     test_result = str(process_query("list the body height"))
     expected_result = format("{'summary': 'Summary of Body Height data (cm)', 'values': [{'name': '45.1,60.5', 'value': '296'}, {'name': '60.5,75.8', 'value': '462'}, " +
                              "{'name': '75.8,91.2', 'value': '476'}, {'name': '91.2,106.5', 'value': '448'}, {'name': '106.5,121.9', 'value': '339'}, " +
                              "{'name': '121.9,137.3', 'value': '424'}, {'name': '137.3,152.6', 'value': '611'}, {'name': '152.6,168.0', 'value': '4342'}, " +
-                             "{'name': '168.0,183.3', 'value': '4265'}, {'name': '183.3,198.7', 'value': '889'}], 'metrics': [{'average': '153.85'}, {'median': '165.0'}, " +
-                             "{'max': '198.7'}, {'min': '45.1'}, {'range': '153.6'}, {'standard deviation': '33.72'}]}")
+                             "{'name': '168.0,183.3', 'value': '4265'}, {'name': '183.3,198.7', 'value': '889'}], 'metrics': [{'mean': '153.85'}, {'median': '165.0'}, " +
+                             "{'max': '198.7'}, {'min': '45.1'}, {'range': '153.6'}, {'stdev': '33.72'}]}")
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"   
 
     #test "list"
@@ -53,37 +53,37 @@ def test_process_query():
                              "{'name': '165.4,180.8', 'value': '1454'}, {'name': '180.8,196.2', 'value': '1380'}, {'name': '196.2,211.6', 'value': '866'}, " +
                              "{'name': '211.6,227.0', 'value': '433'}, {'name': '227.0,242.4', 'value': '352'}, {'name': '242.4,257.8', 'value': '109'}, " +
                              "{'name': '257.8,273.2', 'value': '16'}, {'name': '273.2,288.6', 'value': '5'}, {'name': '288.6,304.0', 'value': '9'}], " +
-                             "'metrics': [{'average': '190.484'}, {'median': '186.9'}, {'max': '304.0'}, {'min': '150.0'}, {'range': '154.0'}, {'standard deviation': '23.325'}]}")
+                             "'metrics': [{'mean': '190.484'}, {'median': '186.9'}, {'max': '304.0'}, {'min': '150.0'}, {'range': '154.0'}, {'stdev': '23.325'}]}")
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
     #test "mean"
     test_result = str(process_query("give me the mean of the patients' respiratory rate"))
-    expected_result = "{'summary': 'Summary of the Mean of Respiratory rate data', 'values': [{'name': 'mean', 'value': '14.018164435946463'}], 'metrics': []}"
+    expected_result = "{'summary': 'Summary of the Mean of Respiratory rate data', 'values': [{'name': 'mean', 'value': '14.018164435946463'}], 'metrics': [{'mean': '14.018164435946463'}, {'median': '--'}, {'maximum': '--'}, {'minimum': '--'}, {'range': '--'}, {'stdev': '--'}]}"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
     #test "median"
     test_result = str(process_query("give me the median of the patients' respiratory rate"))
-    expected_result = "{'summary': 'Summary of the Median of Respiratory rate data', 'values': [{'name': 'median', 'value': '14.0'}], 'metrics': []}"
+    expected_result = "{'summary': 'Summary of the Median of Respiratory rate data', 'values': [{'name': 'median', 'value': '14.0'}], 'metrics': [{'mean': '--'}, {'median': '14.0'}, {'maximum': '--'}, {'minimum': '--'}, {'range': '--'}, {'stdev': '--'}]}"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
     #test "maximum"
     test_result = str(process_query("give me the maximum of the patients' respiratory rate"))
-    expected_result = "{'summary': 'Summary of the Maximum of Respiratory rate data', 'values': [{'name': 'maximum', 'value': '16.0'}], 'metrics': []}"
+    expected_result = "{'summary': 'Summary of the Maximum of Respiratory rate data', 'values': [{'name': 'maximum', 'value': '16.0'}], 'metrics': [{'mean': '--'}, {'median': '--'}, {'maximum': '16.0'}, {'minimum': '--'}, {'range': '--'}, {'stdev': '--'}]}"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
     #test "minimum"
     test_result = str(process_query("give me the minimum of the patients' respiratory rate"))
-    expected_result = "{'summary': 'Summary of the Minimum of Respiratory rate data', 'values': [{'name': 'minimum', 'value': '12.0'}], 'metrics': []}"
+    expected_result = "{'summary': 'Summary of the Minimum of Respiratory rate data', 'values': [{'name': 'minimum', 'value': '12.0'}], 'metrics': [{'mean': '--'}, {'median': '--'}, {'maximum': '--'}, {'minimum': '12.0'}, {'range': '--'}, {'stdev': '--'}]}"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
     #test "range"
     test_result = str(process_query("give me the range of the patients' respiratory rate"))
-    expected_result = "{'summary': 'Summary of the Range of Respiratory rate data', 'values': [{'name': 'range', 'value': '4.0'}], 'metrics': []}"
+    expected_result = "{'summary': 'Summary of the Range of Respiratory rate data', 'values': [{'name': 'range', 'value': '4.0'}], 'metrics': [{'mean': '--'}, {'median': '--'}, {'maximum': '--'}, {'minimum': '--'}, {'range': '4.0'}, {'stdev': '--'}]}"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
     #test "standard deviation"
     test_result = str(process_query("give me the standard deviation of the patients' respiratory rate"))
-    expected_result = "{'summary': 'Summary of the Standard deviation of Respiratory rate data', 'values': [{'name': 'standard deviation', 'value': '1.1529694844094023'}], 'metrics': []}"
+    expected_result = "{'summary': 'Summary of the Standard deviation of Respiratory rate data', 'values': [{'name': 'standard deviation', 'value': '1.1529694844094023'}], 'metrics': [{'mean': '--'}, {'median': '--'}, {'maximum': '--'}, {'minimum': '--'}, {'range': '--'}, {'stdev': '--'}]}"
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}" 
 
 
@@ -156,8 +156,8 @@ def test_format_rows_for_graphing():
     expected_result = format("{'summary': 'Summary of Test Data', 'values': [{'name': '2.0,21.1', 'value': '1'}, {'name': '21.1,40.3', 'value': '1'}, " +
                             "{'name': '40.3,59.4', 'value': '0'}, {'name': '59.4,78.5', 'value': '0'}, {'name': '78.5,97.6', 'value': '2'}, " +
                             "{'name': '97.6,116.8', 'value': '0'}, {'name': '116.8,135.9', 'value': '0'}, {'name': '135.9,155.0', 'value': '0'}, " +
-                            "{'name': '155.0,174.2', 'value': '0'}, {'name': '174.2,193.3', 'value': '1'}], 'metrics': [{'average': '77.72'}, " +
-                            "{'median': '82.0'}, {'max': '193.3'}, {'min': '2.0'}, {'range': '191.3'}, {'standard deviation': '66.561'}]}")
+                            "{'name': '155.0,174.2', 'value': '0'}, {'name': '174.2,193.3', 'value': '1'}], 'metrics': [{'mean': '77.72'}, " +
+                            "{'median': '82.0'}, {'max': '193.3'}, {'min': '2.0'}, {'range': '191.3'}, {'stdev': '66.561'}]}")
     assert test_result == expected_result, f"Got wrong result, expected is: {expected_result}, actual is {test_result}"
 
 
