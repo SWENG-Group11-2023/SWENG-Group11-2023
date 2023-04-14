@@ -336,7 +336,7 @@ def format_rows_for_graphing(rows, summary, best_metric, type):
             for index, n in np.ndenumerate(bins):
                 i = index[0]
                 label = f"{round(labels[i], 1)},{round(labels[i+1], 1)}"
-                data["values"].append({"name": label, "value": f"{int(n)}"})
+                data["values"].append({"name": label, "value": int(n)})
 
             n = np.array(numbers)
 
