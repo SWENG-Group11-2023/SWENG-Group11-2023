@@ -12,22 +12,20 @@ import Project from './pages/Project';
 
 
 const App = () => {
-  return (
-    <BrowserRouter>
-    <React.Fragment>
-      <Navbar/>
-    </React.Fragment>
-    <SideBar>
-    <Routes>
-      <Route path ="/"element={<Dashboard/>}/>
-      <Route path ="/dashboard"element={<Dashboard/>}/>
-      <Route path ="/analytics"element={<Analytics/>}/>
-      <Route path ="/Group"element={<Group/>}/>
-      <Route path ="/Clients"element={<Clients/>}/>
-      <Route path ="/Project"element={<Project/>}/>
-    </Routes>
-    </SideBar>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <React.Fragment>
+                <Navbar />
+            </React.Fragment>
+            <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/Group" element={<Group />} />
+                <Route path="/Clients" element={<Clients />} />
+                <Route path="/Project" element={<Project />} />
+            </Routes>
+        </BrowserRouter>
+    );
 };
-export default  App;
+export default App;

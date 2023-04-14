@@ -14,11 +14,11 @@ A link to the website hosting the data, SyntheticMass, can be found [here](https
 
 ## Prerequisites
 
-TBD
+Docker installed on system
 
 ## How To Run
 
-TBD
+For ease of use Dockerfiles have been provided to run the program on localhost. You can decide to either manually run the docker files to your own preference or use the provided shell scripts for windows and unix to automatically run the required commands. To use the shell scripts, just execute them from terminal in the repository's root folder. Once the script completes navigate to localhost:3000 in a browser to run.  
 
 ## Members of the Team
 | Name                  | Year        | Course                        |
