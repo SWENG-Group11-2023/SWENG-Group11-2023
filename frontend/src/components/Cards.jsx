@@ -11,8 +11,8 @@ const Cards = () => {
     const [Userdata, setData] = useState([
         { mean: '79.678' },
         { median: '80.0' },
-        { maximum: '100.0' },
-        { minimum: '60.0' },
+        { max: '100.0' },
+        { min: '60.0' },
         { range: '40.0' },
         { stdev: '11.596' }
     ]);
@@ -59,7 +59,7 @@ const Cards = () => {
                             <Typography variant='body2' color='skyblue'>
                                 Maximum
                                 <h1>
-                                    {Userdata[2].maximum}
+                                    {Userdata[2].max}
                                 </h1>
                             </Typography>
                         </CardContent>
@@ -74,7 +74,7 @@ const Cards = () => {
                             <Typography variant='body2' color='skyblue'>
                                 Minimum
                                 <h1>
-                                    {Userdata[3].minimum}
+                                    {Userdata[3].min}
                                 </h1>
                             </Typography>
                         </CardContent>
