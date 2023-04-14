@@ -41,7 +41,7 @@ Once you have typed in a query, hit the enter button on your keyboard and then p
 The page will then display your results like so.
 <img width="1437" alt="Results" src="https://user-images.githubusercontent.com/72447771/232019775-9bb5026d-b0a0-4bf8-bc83-ec7d13118d53.png">
 
-You can download the data returned in a CSV file using the download CSV button at the searchbar or enter a new query repeating the same process as before.
+You can download the data returned in a CSV file using the download CSV button at the search bar or enter a new query repeating the same process as before.
 
 <img width="359" alt="Download CSV button" src="https://user-images.githubusercontent.com/72447771/232019809-8743f07d-2900-42d2-aab3-6ee6609ca2cd.png">
 
