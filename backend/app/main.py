@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 from sqlite import execute_query,create_db
-from process import process_query,descriptions_to_json, download_to_csv
+from process import process_query,descriptions_to_json, download_to_csv, values_to_json
 from constants import *
 import nltk
 
@@ -17,6 +17,9 @@ nltk.download('vader_lexicon')
 create_db()
 # creates description.json if does not exist
 descriptions_to_json()
+
+# creates values json if it does not exist
+values_to_json()
 
 # config stuff to expose to frontend application
 middlewares = [
